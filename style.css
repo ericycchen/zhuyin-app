@@ -301,11 +301,60 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .app-container {
+        gap: 1rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .version-nav {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .version-nav a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
     .main-content {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
     .glass-panel {
-        height: 350px;
+        padding: 1rem;
+    }
+
+    .input-section.glass-panel {
+        height: 150px;
+    }
+
+    .output-section.glass-panel {
+        height: 450px;
+    }
+    
+    textarea {
+        font-size: 1.2rem;
+    }
+
+    .output-content {
+        font-size: 1.2rem;
+    }
+
+    .output-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .font-size-control {
+        align-self: flex-end;
     }
 }

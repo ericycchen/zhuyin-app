@@ -4,12 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontSizeSlider = document.getElementById('font-size-slider');
     
     if (fontSizeSlider) {
-        fontSizeSlider.addEventListener('input', (e) => {
-            outputArea.style.fontSize = `${e.target.value}px`;
-            inputArea.style.fontSize = `${e.target.value}px`;
-        });
-        outputArea.style.fontSize = `${fontSizeSlider.value}px`;
-        inputArea.style.fontSize = `${fontSizeSlider.value}px`;
+        function updateFontSizes() {
+            outputArea.style.fontSize = `${fontSizeSlider.value}px`;
+            if (window.innerWidth > 768) {
+                inputArea.style.fontSize = `${fontSizeSlider.value}px`;
+            } else {
+                inputArea.style.fontSize = '1.2rem';
+            }
+        }
+        fontSizeSlider.addEventListener('input', updateFontSizes);
+        window.addEventListener('resize', updateFontSizes);
+        updateFontSizes();
     }
 
     const { html } = pinyinPro; // Use raw pinyin-pro without customPinyin
@@ -386,6 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
         outputArea.innerHTML = tempDiv.innerHTML.replace(/\n/g, '<br>').replace(/<br\/>/g, '<br>');
     }
 
+    // Persist text across pages
+    inputArea.addEventListener('input', (e) => {
+        localStorage.setItem('zhuyin_input_text', e.target.value);
+    });
+
     let compareTimer;
     inputArea.addEventListener('input', () => {
         const text = inputArea.value;
@@ -400,11 +410,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 
-    // Initial check
-    if (inputArea.value.trim()) {
-        const text = inputArea.value;
-        renderFastAndTriggerCompare(text);
-        compareIdCounter++;
-        compareWithMoedict(text, compareIdCounter);
+    // Restore text from localStorage on page load
+    const savedText = localStorage.getItem('zhuyin_input_text');
+    if (savedText) {
+        inputArea.value = savedText;
+        inputArea.dispatchEvent(new Event('input'));
+    } else if (inputArea.value.trim()) {
+        inputArea.dispatchEvent(new Event('input'));
     }
 });
