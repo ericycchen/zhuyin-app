@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
     <div class="app-container">
@@ -52,6 +52,26 @@
     <!-- 引入 pinyin-pro 函式庫 -->
     <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.27.0/dist/index.js"></script>
     <!-- 引入應用程式邏輯 -->
-    <script src="app.js?v=12"></script>
+    <script src="app.js?v=19"></script>
+    <script>
+        if (window.visualViewport) {
+            const adjustForKeyboard = () => {
+                if (window.innerWidth <= 768) {
+                    document.body.style.height = window.visualViewport.height + 'px';
+                    document.body.style.overflow = 'hidden';
+                    const container = document.querySelector('.app-container');
+                    if (container) container.style.height = (window.visualViewport.height - 16) + 'px';
+                } else {
+                    document.body.style.height = '';
+                    document.body.style.overflow = '';
+                    const container = document.querySelector('.app-container');
+                    if (container) container.style.height = '';
+                }
+            };
+            window.visualViewport.addEventListener('resize', adjustForKeyboard);
+            window.visualViewport.addEventListener('scroll', adjustForKeyboard);
+            adjustForKeyboard();
+        }
+    </script>
 </body>
 </html>

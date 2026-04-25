@@ -159,6 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
         outputArea.innerHTML = finalHtml;
     }
 
+    inputArea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && window.innerWidth <= 768) {
+            e.preventDefault();
+            inputArea.blur();
+        }
+    });
+
     let debounceTimer;
     inputArea.addEventListener('input', (e) => {
         localStorage.setItem('zhuyin_input_text', e.target.value);

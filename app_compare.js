@@ -391,6 +391,13 @@ document.addEventListener('DOMContentLoaded', () => {
         outputArea.innerHTML = tempDiv.innerHTML.replace(/\n/g, '<br>').replace(/<br\/>/g, '<br>');
     }
 
+    inputArea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && window.innerWidth <= 768) {
+            e.preventDefault();
+            inputArea.blur();
+        }
+    });
+
     // Persist text across pages
     inputArea.addEventListener('input', (e) => {
         localStorage.setItem('zhuyin_input_text', e.target.value);

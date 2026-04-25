@@ -272,6 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    inputArea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && window.innerWidth <= 768) {
+            e.preventDefault();
+            inputArea.blur();
+        }
+    });
+
     inputArea.addEventListener('input', (e) => {
         localStorage.setItem('zhuyin_input_text', e.target.value);
         updateZhuyin(e);
