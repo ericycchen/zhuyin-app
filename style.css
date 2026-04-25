@@ -302,16 +302,17 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
     body {
-        padding: 1rem;
+        padding: 0.5rem;
     }
 
     .app-container {
-        gap: 0.5rem;
+        gap: 0.4rem;
+        height: calc(100vh - 1rem); /* Fill screen */
     }
 
     header h1 {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.2rem;
     }
 
     header p {
@@ -320,47 +321,56 @@ footer {
 
     .version-nav {
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.3rem;
+        margin-bottom: 0;
     }
 
     .version-nav a {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
     }
 
     .main-content {
         display: flex;
         flex-direction: column-reverse;
-        gap: 0.8rem;
+        gap: 0.5rem;
+        flex: 1;
     }
     
     .glass-panel {
-        padding: 1rem;
+        padding: 0.6rem;
     }
 
     .input-section.glass-panel {
-        height: 120px;
+        height: 100px;
+        min-height: 100px;
+        flex: none;
     }
 
     .output-section.glass-panel {
-        height: 400px;
+        flex: 1;
+        height: auto;
+        min-height: 200px;
     }
     
     textarea {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: 0.5rem;
     }
 
     .output-content {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: 0.5rem;
     }
 
     .output-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
     }
 
-    .font-size-control {
-        align-self: flex-end;
+    .output-header label {
+        font-size: 0.9rem;
     }
 }
