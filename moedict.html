@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注音小幫手 - 萌典版</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入自訂樣式 -->
+    <link rel="stylesheet" href="style.css?v=9">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>注音小幫手</h1>
+            <p>輸入中文，立即轉換為帶有注音符號的文字</p>
+            <nav class="version-nav">
+                <a href="index.html">高速版 (pinyin-pro)</a>
+                <a href="moedict.html" class="active">萌典版 (教育部標準)</a>
+                <a href="compare.html">比對版 (差異標示)</a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <div class="input-section glass-panel">
+                <label for="chinese-input">輸入中文字：</label>
+                <textarea id="chinese-input" placeholder="請在此輸入想要轉換的中文字..."></textarea>
+            </div>
+            
+            <div class="output-section glass-panel">
+                <div class="output-header">
+                    <label>注音結果 (萌典 API)：</label>
+                    <div class="font-size-control">
+                        <span>小</span>
+                        <input type="range" id="font-size-slider" min="16" max="72" value="24">
+                        <span>大</span>
+                    </div>
+                </div>
+                <div id="zhuyin-output" class="output-content">
+                    <span class="placeholder-text">轉換結果將顯示於此... (初次轉換可能需要連線時間)</span>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by 萌典 (Moedict)</p>
+        </footer>
+    </div>
+
+    <!-- 引入應用程式邏輯 -->
+    <script src="app_moe.js?v=6"></script>
+</body>
+</html>
