@@ -20,6 +20,7 @@
                 <a href="index.html" class="active">⚡️ 高速版</a>
                 <a href="moedict.html">📖 萌典版</a>
                 <a href="compare.html">🔍 比對版</a>
+                <a href="#" id="version-info-btn" class="info-btn" title="版本差異說明">❓ 版本說明</a>
             </nav>
         </header>
         
@@ -89,5 +90,35 @@
             adjustForKeyboard();
         }
     </script>
+    <!-- 版本說明彈出視窗 -->
+    <div id="version-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-modal">&times;</span>
+            <h2>💡 版本差異與說明</h2>
+            <div class="modal-body">
+                <div class="version-card">
+                    <h3>⚡️ 高速版 (pinyin-pro)</h3>
+                    <p><strong>優點：</strong>完全在本機（瀏覽器端）執行，<strong>無任何網路延遲</strong>，輸入文字後即時完成注音轉換。效能極致、流暢度最高。</p>
+                    <p><strong>缺點：</strong>在少數罕見的破音字（多音字）或古文詞彙中，可能無法百分之百精確判斷語境。</p>
+                </div>
+                <div class="version-card">
+                    <h3>📖 萌典版 (教育部國語辭典)</h3>
+                    <p><strong>優點：</strong>串接教育部官方國語辭典（萌典 API），<strong>破音字、成語及古漢語語境判斷最精準權威</strong>。</p>
+                    <p><strong>缺點：</strong>每次輸入或更改時皆需透過網路請求 API，可能受網路連線品質影響產生微幅延遲；且首次載入單字時需要短暫查詢時間。</p>
+                </div>
+                <div class="version-card highlight-card">
+                    <h3>🔍 比對版 (推薦使用)</h3>
+                    <p><strong>完美結合：</strong>同時融合了「高速版」與「萌典版」的核心優勢！</p>
+                    <p><strong>運行機制：</strong></p>
+                    <ul>
+                        <li>輸入文字後，<strong>高速版會在一瞬間先完成注音渲染</strong>（0 延遲，保證無卡頓體驗）。</li>
+                        <li>隨後系統在背景<strong>非同步查詢萌典權威資料庫</strong>。</li>
+                        <li>若發現萌典的注音與高速版有差異，<strong>系統會自動將該字標註為橘色，並預設採用權威的萌典注音</strong>。</li>
+                        <li><strong>滑鼠懸停（或手機點擊）該字時</strong>，會浮現提示顯示原高速版的注音，方便進行快速比對與學習。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

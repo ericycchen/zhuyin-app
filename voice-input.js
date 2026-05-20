@@ -157,4 +157,42 @@ document.addEventListener('DOMContentLoaded', () => {
         inputArea.placeholder = originalPlaceholder;
         inputArea.classList.remove('voice-active');
     }
+
+    // 版本說明 Modal 邏輯
+    const infoBtn = document.getElementById('version-info-btn');
+    const modal = document.getElementById('version-modal');
+    
+    if (infoBtn && modal) {
+        const closeBtn = modal.querySelector('.close-modal');
+        
+        const openModal = (e) => {
+            e.preventDefault();
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // 防止背景滾動
+        };
+        
+        const closeModal = () => {
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // 恢復背景滾動
+        };
+        
+        infoBtn.addEventListener('click', openModal);
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+        
+        // 點擊 Modal 背景關閉
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // 按 ESC 鍵關閉
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                closeModal();
+            }
+        });
+    }
 });
