@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注音小幫手 - 版本說明</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入自訂樣式 -->
+    <link rel="stylesheet" href="style.css?v=20">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>注音小幫手</h1>
+            <p>輸入中文，立即轉換為帶有注音符號的文字</p>
+            <nav class="version-nav">
+                <a href="index.html">⚡️ 高速版</a>
+                <a href="moedict.html">📖 萌典版</a>
+                <a href="compare.html">🔍 比對版</a>
+                <a href="versions.html" class="active">❓ 版本說明</a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <div class="glass-panel versions-panel">
+                <h2>💡 版本差異與說明</h2>
+                <p>注音小幫手提供三種核心版本，適應不同的使用場景：</p>
+                <div class="versions-grid">
+                    <!-- High-speed Card -->
+                    <div class="version-intro-card">
+                        <h3>⚡️ 高速版 (pinyin-pro)</h3>
+                        <p><strong>優點：</strong>完全在本機（瀏覽器端）執行，<strong>無任何網路延遲</strong>，即時轉換。效能極致、流暢度最高。</p>
+                        <p><strong>缺點：</strong>在少數罕見的破音字或古文詞彙中，可能無法百分之百精確判斷語境。</p>
+                    </div>
+                    <!-- MoeDict Card -->
+                    <div class="version-intro-card">
+                        <h3>📖 萌典版 (教育部國語辭典)</h3>
+                        <p><strong>優點：</strong>串接教育部官方國語辭典，<strong>破音字、成語及古語判斷最精準權威</strong>。</p>
+                        <p><strong>缺點：</strong>每次輸入皆需發送網路 API 請求，容易受網路品質影響產生微幅延遲。</p>
+                    </div>
+                    <!-- Comparison Card -->
+                    <div class="version-intro-card highlight-intro-card">
+                        <h3>🔍 比對版 (推薦使用)</h3>
+                        <p><strong>完美結合：</strong>融合「高速版」的流暢與「萌典版」的權威！</p>
+                        <ul>
+                            <li>輸入文字後，<strong>高速版會在一瞬間完成注音渲染</strong>（0 延遲，保證無卡頓）。</li>
+                            <li>隨後在背景<strong>非同步查詢萌典權威資料庫</strong>。</li>
+                            <li>若發現萌典注音與高速版有差異，<strong>系統會自動將該字標註為橘色，並預設採用權威的萌典注音</strong>。</li>
+                            <li><strong>滑鼠懸停（或手機點擊）該字時</strong>，會浮現提示顯示原高速版的注音，方便進行快速比對與學習。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by 注音小幫手團隊</p>
+        </footer>
+    </div>
+</body>
+</html>
