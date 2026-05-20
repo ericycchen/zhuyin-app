@@ -299,6 +299,126 @@ footer {
     to { opacity: 1; }
 }
 
+/* Textarea Container and Voice Input Button */
+.textarea-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+textarea {
+    padding-right: 7.2rem !important; /* Ensure space for both the floating clear and microphone buttons */
+}
+
+.clear-input-btn {
+    display: none; /* Shown dynamically in JS */
+    position: absolute;
+    right: 64px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: var(--text-muted);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+.clear-input-btn:hover {
+    background: #fee2e2; /* Very soft light red tint */
+    color: #ef4444;      /* Beautiful modern red */
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.2);
+}
+
+.clear-input-btn:active {
+    transform: scale(0.95);
+}
+
+.clear-input-btn .clear-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.2s ease;
+}
+
+.clear-input-btn:hover .clear-icon {
+    transform: rotate(90deg); /* Modern playful rotation on hover */
+}
+
+textarea.voice-active {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.voice-input-btn {
+    display: none; /* Shown dynamically in JS if supported */
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+.voice-input-btn:hover {
+    background: var(--primary-light);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+}
+
+.voice-input-btn:active {
+    transform: scale(0.95);
+}
+
+.voice-input-btn.recording {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    animation: recording-pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+.voice-input-btn .mic-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.2s ease;
+}
+
+.voice-input-btn.recording .mic-icon {
+    transform: scale(1.1);
+}
+
+@keyframes recording-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0), 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     body {
@@ -349,6 +469,11 @@ footer {
         flex: none;
     }
 
+    .textarea-container {
+        height: 100%;
+        min-height: 0;
+    }
+
     .input-section label {
         display: none;
     }
@@ -361,7 +486,33 @@ footer {
     
     textarea {
         font-size: 1.1rem;
-        padding: 0.5rem;
+        padding: 0.35rem 5.2rem 0.35rem 0.5rem !important; /* Ensure space for both buttons */
+        line-height: 1.35 !important;
+        height: 100%;
+        min-height: 0;
+    }
+
+    .clear-input-btn {
+        width: 32px;
+        height: 32px;
+        right: 46px;
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .clear-input-btn:hover {
+        transform: translateY(-50%) scale(1.05);
+    }
+    
+    .clear-input-btn:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+    
+    .clear-input-btn .clear-icon {
+        width: 16px;
+        height: 16px;
     }
 
     .output-content {
@@ -379,4 +530,47 @@ footer {
     .output-header label {
         font-size: 0.9rem;
     }
+
+    /* Mobile overrides for voice input button */
+    .voice-input-btn {
+        width: 32px;
+        height: 32px;
+        right: 8px;
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .voice-input-btn:hover {
+        transform: translateY(-50%) scale(1.05);
+    }
+    
+    .voice-input-btn:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+    
+    .voice-input-btn.recording {
+        animation: recording-pulse-mobile 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+    
+    .voice-input-btn .mic-icon {
+        width: 16px;
+        height: 16px;
+    }
 }
+
+@keyframes recording-pulse-mobile {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        transform: translateY(-50%) scale(1);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+        transform: translateY(-50%) scale(1);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        transform: translateY(-50%) scale(1);
+    }
+}
+
