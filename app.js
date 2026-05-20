@@ -292,8 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedText = localStorage.getItem('zhuyin_input_text');
     if (savedText) {
         inputArea.value = savedText;
-        inputArea.dispatchEvent(new Event('input'));
+        setTimeout(() => {
+            inputArea.dispatchEvent(new Event('input'));
+        }, 100);
     } else if (inputArea.value.trim()) {
-        inputArea.dispatchEvent(new Event('input'));
+        setTimeout(() => {
+            inputArea.dispatchEvent(new Event('input'));
+        }, 100);
     }
 });
