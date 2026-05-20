@@ -451,6 +451,16 @@ textarea.voice-active {
         font-size: 0.85rem;
     }
 
+    .nav-compare-group {
+        gap: 0.3rem;
+    }
+
+    .nav-info-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 0.75rem;
+    }
+
     .main-content {
         display: flex;
         flex-direction: column-reverse;
@@ -574,17 +584,42 @@ textarea.voice-active {
     }
 }
 
-/* Version Info Modal Styling */
-.version-nav a.info-btn {
-    background: rgba(99, 102, 241, 0.05);
-    border-color: rgba(99, 102, 241, 0.2);
-    color: var(--primary-color);
+/* Version Info Button & Group Styling */
+.nav-compare-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.version-nav a.info-btn:hover {
-    background: rgba(99, 102, 241, 0.15);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+.nav-info-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.08);
+}
+
+.nav-info-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.nav-info-btn:active {
+    transform: scale(0.95);
 }
 
 .modal {
