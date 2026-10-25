@@ -51,17 +51,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.innerWidth > MOBILE_MAX_WIDTH) {
             inputArea.style.height = '';
             inputArea.style.overflowY = '';
+            inputArea.style.removeProperty('padding-top');
+            inputArea.style.removeProperty('padding-bottom');
             return;
         }
+        // 先還原上下內距，再依內容決定
+        inputArea.style.removeProperty('padding-top');
+        inputArea.style.removeProperty('padding-bottom');
         const style = getComputedStyle(inputArea);
         const lineHeight = parseFloat(style.lineHeight);
-        const extra = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
-            + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
         const contentLines = measureLines(lineHeight);
+        const overflowing = contentLines > MAX_LINES;
         const lines = Math.min(contentLines, MAX_LINES);
+        let padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+        if (overflowing) {
+            // 需要捲動時，上下內距會露出前後一行的一小截；改為 0，捲動中才不會在邊緣看到半行字
+            inputArea.style.setProperty('padding-top', '0px', 'important');
+            inputArea.style.setProperty('padding-bottom', '0px', 'important');
+            padY = 0;
+        }
+        const border = parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
         // 高度剛好是整數行，不會出現半行字
-        inputArea.style.height = `${Math.ceil(lines * lineHeight + extra)}px`;
-        inputArea.style.overflowY = contentLines > MAX_LINES ? 'auto' : 'hidden';
+        inputArea.style.height = `${Math.ceil(lines * lineHeight + padY + border)}px`;
+        inputArea.style.overflowY = overflowing ? 'auto' : 'hidden';
     }
     inputArea.addEventListener('input', autoResize);
     window.addEventListener('resize', autoResize);
