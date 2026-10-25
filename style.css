@@ -2,6 +2,7 @@
     --primary-color: #6366f1;
     --primary-light: #818cf8;
     --zhuyin-color: #4f46e5;
+    --diff-color: #c2410c;
     --bg-gradient-start: #e0e7ff;
     --bg-gradient-end: #f3e8ff;
     --text-main: #1e293b;
@@ -246,9 +247,9 @@ textarea:focus {
     font-size: 1em; /* Align font size */
 }
 
-/* Comparison diff styling */
+/* Comparison diff styling（比對版：萌典與高速版讀音不同的字） */
 .zhuyin-bopomofo.diff-orange {
-    color: #f97316; /* bright orange */
+    color: var(--diff-color);
     font-weight: 700;
 }
 
@@ -256,16 +257,52 @@ textarea:focus {
     display: none;
 }
 
+/* 點一下切換讀音；底線讓差異不只靠顏色辨識 */
 .zhuyin-word.diff-container {
-    cursor: help;
+    cursor: pointer;
+    border-bottom: 0.08em solid var(--diff-color);
+    border-radius: 0.15em;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.zhuyin-word.diff-container:hover .diff-moe {
+.zhuyin-word.diff-container:hover {
+    background: rgba(194, 65, 12, 0.08);
+}
+
+.zhuyin-word.diff-container:focus-visible {
+    outline: 2px solid var(--diff-color);
+    outline-offset: 2px;
+}
+
+/* 切換到高速版讀音時：底線改為虛線，注音恢復一般顏色 */
+.zhuyin-word.diff-container.show-fast {
+    border-bottom-style: dashed;
+}
+
+.zhuyin-word.diff-container.show-fast .diff-moe {
     display: none;
 }
 
-.zhuyin-word.diff-container:hover .diff-fast {
+.zhuyin-word.diff-container.show-fast .diff-fast {
     display: flex;
+}
+
+/* 比對版圖例 */
+.diff-legend {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: -0.3rem 0 0.6rem;
+    line-height: 1.5;
+}
+
+.diff-legend[hidden] {
+    display: none;
+}
+
+.diff-legend .diff-sample {
+    color: var(--diff-color);
+    font-weight: 700;
+    border-bottom: 2px solid var(--diff-color);
 }
 
 /* Scrollbar styles for output content */
@@ -540,6 +577,11 @@ textarea.voice-active {
 
     .output-header label {
         font-size: 0.9rem;
+    }
+
+    .diff-legend {
+        font-size: 0.8rem;
+        margin: -0.2rem 0 0.4rem;
     }
 
     /* Mobile overrides for voice input button */

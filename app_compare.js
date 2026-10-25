@@ -304,12 +304,67 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="zhuyin-bopomofo diff-fast">${fastHtml}</span>
                     `;
                     container.classList.add('diff-container');
+                    makeDiffToggle(container, item.char, moeRaw, fastRaw);
                 }
             }
         }
+        updateLegend();
     }
 
+    // ---------- 差異字：點一下（或 Enter / 空白鍵）切換萌典／高速版讀音 ----------
+    const legend = document.getElementById('diff-legend');
+
+    function makeDiffToggle(container, char, moeRaw, fastRaw) {
+        container.setAttribute('role', 'button');
+        container.setAttribute('tabindex', '0');
+        container.dataset.char = char;
+        container.dataset.moeBopo = moeRaw;
+        updateDiffLabel(container);
+    }
+
+    function updateDiffLabel(container) {
+        const showFast = container.classList.contains('show-fast');
+        const moe = container.dataset.moeBopo;
+        const fast = container.getAttribute('data-fast-bopo') || '（無）';
+        container.setAttribute('aria-pressed', String(showFast));
+        container.setAttribute('aria-label', showFast
+            ? `${container.dataset.char}，目前顯示高速版讀音 ${fast}，萌典為 ${moe}。按一下切換`
+            : `${container.dataset.char}，目前顯示萌典讀音 ${moe}，高速版為 ${fast}。按一下切換`);
+    }
+
+    function toggleDiff(container) {
+        container.classList.toggle('show-fast');
+        updateDiffLabel(container);
+    }
+
+    function updateLegend() {
+        if (!legend) return;
+        const count = outputArea.querySelectorAll('.diff-container').length;
+        if (count === 0) {
+            legend.hidden = true;
+            legend.textContent = '';
+            return;
+        }
+        legend.innerHTML = `有 ${count} 個字讀音不同，以<span class="diff-sample">橘色底線</span>標示（顯示萌典讀音）。點一下可切換成高速版讀音。`;
+        legend.hidden = false;
+    }
+
+    outputArea.addEventListener('click', (e) => {
+        const container = e.target.closest('.diff-container');
+        if (container && outputArea.contains(container)) toggleDiff(container);
+    });
+
+    outputArea.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const container = e.target.closest('.diff-container');
+        if (container) {
+            e.preventDefault();
+            toggleDiff(container);
+        }
+    });
+
     function renderFastAndTriggerCompare(text) {
+        if (legend) { legend.hidden = true; legend.textContent = ''; }
         if (!text.trim()) {
             outputArea.innerHTML = '<span class="placeholder-text">轉換結果將顯示於此...</span>';
             return;
