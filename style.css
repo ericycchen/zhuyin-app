@@ -51,7 +51,7 @@ header h1 {
     text-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-header p {
+header .tagline {
     color: var(--text-muted);
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
@@ -463,6 +463,76 @@ textarea:focus {
     display: none;
 }
 
+/* 標題列：空間不夠時工具列換到第二行，按鈕文字不折行 */
+.output-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.output-title {
+    white-space: nowrap;
+}
+
+.output-tools {
+    margin-left: auto;
+}
+
+.tool-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* 版本說明 */
+.version-hint {
+    margin: 0.75rem 0 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* ---------- 大字閱讀模式：結果區佔滿整個畫面 ---------- */
+.reading-exit-btn {
+    display: none;
+}
+
+body.reading-mode {
+    overflow: hidden;
+}
+
+body.reading-mode .output-section.glass-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    height: auto;
+    border-radius: 0;
+    border: none;
+    padding: 1rem 1.5rem 1.5rem;
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    animation: none;
+}
+
+body.reading-mode .output-content {
+    max-height: none;
+    border: none;
+    background: none;
+}
+
+body.reading-mode .output-title,
+body.reading-mode #copy-btn,
+body.reading-mode #print-btn,
+body.reading-mode #reading-btn {
+    display: none;
+}
+
+body.reading-mode .output-header {
+    justify-content: flex-end;
+}
+
+body.reading-mode .reading-exit-btn {
+    display: inline-flex;
+}
+
 /* Scrollbar styles for output content */
 .output-content::-webkit-scrollbar {
     width: 8px;
@@ -642,8 +712,13 @@ textarea.voice-active {
         margin-bottom: 0.2rem;
     }
 
-    header p {
+    header .tagline {
         display: none;
+    }
+
+    .version-hint {
+        font-size: 0.75rem;
+        margin-top: 0.3rem;
     }
 
     .version-nav {
@@ -774,6 +849,14 @@ textarea.voice-active {
 
     .output-tools {
         gap: 0.4rem;
+    }
+
+    .font-size-control {
+        gap: 0.3rem;
+    }
+
+    .font-size-control input[type="range"] {
+        width: 72px;
     }
 
     .print-btn,
