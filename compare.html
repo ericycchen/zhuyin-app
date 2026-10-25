@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=23">
+    <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
     <div class="app-container">
@@ -28,22 +28,23 @@
                 <label for="chinese-input">輸入中文字：</label>
                 <div class="textarea-container">
                     <textarea id="chinese-input" placeholder="請在此輸入想要轉換的中文字..."></textarea>
-                    <button id="clear-input-btn" class="clear-input-btn" title="清除輸入內容">
+                    <button id="clear-input-btn" class="clear-input-btn" type="button" title="清除輸入內容" aria-label="清除輸入內容">
                         <svg class="clear-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                         </svg>
                     </button>
-                    <button id="voice-input-btn" class="voice-input-btn" title="語音輸入 (國語)">
+                    <button id="voice-input-btn" class="voice-input-btn" type="button" title="語音輸入 (國語)" aria-label="語音輸入（國語）">
                         <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
                         </svg>
                     </button>
+                    <p id="input-message" class="input-message" role="status" aria-live="polite" hidden></p>
                 </div>
             </div>
             
             <div class="output-section glass-panel">
                 <div class="output-header">
-                    <label>比對結果：</label>
+                    <h2 class="output-title">比對結果：</h2>
                     <div class="font-size-control">
                         <span>小</span>
                         <input type="range" id="font-size-slider" min="16" max="72" value="28">
@@ -70,7 +71,7 @@
     <!-- 引入簡繁轉換庫 (用於將語音辨識之簡體字轉為繁體) -->
     <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
     <!-- 引入語音輸入邏輯 -->
-    <script src="voice-input.js?v=1"></script>
+    <script src="voice-input.js?v=2"></script>
     <script>
         if (window.visualViewport) {
             const adjustForKeyboard = () => {

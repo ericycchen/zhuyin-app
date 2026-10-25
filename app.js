@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (typeof pinyinPro === 'undefined') {
-        outputArea.innerHTML = '<span style="color: red;">載入 pinyin-pro 失敗，請檢查網路連線。</span>';
+        outputArea.innerHTML = '<span class="output-error" role="alert">載入 pinyin-pro 失敗，請檢查網路連線後重新整理。</span>';
         return;
     }
 
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error(error);
-            outputArea.innerHTML = '<span style="color: red;">轉換過程中發生錯誤。</span>';
+            outputArea.innerHTML = '<span class="output-error" role="alert">轉換過程中發生錯誤，請稍後再試。</span>';
         }
     }
 
