@@ -123,8 +123,44 @@ label {
     margin-bottom: 0.8rem;
 }
 
-.output-header label {
-    margin-bottom: 0;
+.output-title {
+    font-weight: 500;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.output-error {
+    color: #b91c1c;
+}
+
+/* 輸入框內的行內提示（取代 alert） */
+.input-message {
+    position: absolute;
+    left: 0.75rem;
+    right: 7.6rem;
+    bottom: 12px;
+    z-index: 11;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.input-message[hidden] {
+    display: none;
+}
+
+/* 版本切換：觸控高度至少 44px */
+.version-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
 }
 
 .font-size-control {
@@ -497,6 +533,19 @@ textarea.voice-active {
     .version-nav a {
         padding: 0.3rem 0.6rem;
         font-size: 0.85rem;
+        min-height: 0;
+        position: relative;
+    }
+
+    /* 外觀維持小巧，觸控範圍向上下延伸到 44px */
+    .version-nav a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 44px;
+        transform: translateY(-50%);
     }
 
     .main-content {
@@ -511,15 +560,24 @@ textarea.voice-active {
         padding: 0.6rem;
     }
 
+    /* 輸入區高度由 JS 依內容調整（1 到 3 行） */
     .input-section.glass-panel {
-        height: 60px;
-        min-height: 60px;
+        height: auto;
+        min-height: 0;
         flex: none;
+        position: relative;
+        z-index: 20; /* 讓浮在上方的提示訊息蓋在結果區之上 */
     }
 
     .textarea-container {
-        height: 100%;
         min-height: 0;
+    }
+
+    .input-message {
+        left: 0;
+        right: 0;
+        bottom: calc(100% + 0.9rem);
+        font-size: 0.85rem;
     }
 
     .input-section label {
@@ -534,16 +592,29 @@ textarea.voice-active {
     
     textarea {
         font-size: 1.2rem;
-        padding: 0.35rem 5.2rem 0.35rem 0.5rem !important; /* Ensure space for both buttons */
+        padding: 0.35rem 5.4rem 0.35rem 0.5rem !important; /* Ensure space for both buttons */
         line-height: 1.35 !important;
-        height: 100%;
+        height: auto;
         min-height: 0;
+        flex: none;
+        overflow-y: hidden;
+        /* 高度由 JS 直接設定，不做動畫，避免量測到動畫中的高度 */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    /* 按鈕外觀 32px，觸控範圍用 ::after 擴大到 44px */
+    .clear-input-btn::after,
+    .voice-input-btn::after {
+        content: '';
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
     }
 
     .clear-input-btn {
         width: 32px;
         height: 32px;
-        right: 46px;
+        right: 50px;
         bottom: auto;
         top: 50%;
         transform: translateY(-50%);
@@ -575,7 +646,7 @@ textarea.voice-active {
         margin-bottom: 0.5rem;
     }
 
-    .output-header label {
+    .output-title {
         font-size: 0.9rem;
     }
 
@@ -588,7 +659,7 @@ textarea.voice-active {
     .voice-input-btn {
         width: 32px;
         height: 32px;
-        right: 8px;
+        right: 6px;
         bottom: auto;
         top: 50%;
         transform: translateY(-50%);

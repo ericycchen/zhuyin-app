@@ -9,6 +9,65 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (!inputArea || !voiceBtn) return;
 
+    // ---------- 行內提示（取代 alert） ----------
+    const messageEl = document.getElementById('input-message');
+    let messageTimer;
+    function showMessage(text) {
+        if (!messageEl) return;
+        messageEl.textContent = text;
+        messageEl.hidden = false;
+        clearTimeout(messageTimer);
+        messageTimer = setTimeout(hideMessage, 6000);
+    }
+    function hideMessage() {
+        if (!messageEl) return;
+        clearTimeout(messageTimer);
+        messageEl.hidden = true;
+        messageEl.textContent = '';
+    }
+    if (messageEl) messageEl.addEventListener('click', hideMessage);
+
+    // ---------- 手機版輸入框依內容長高（1 到 3 行） ----------
+    const MOBILE_MAX_WIDTH = 768;
+    const MAX_LINES = 3;
+    // 用一個看不見的複製輸入框量測行數，不影響使用者的游標與捲動位置
+    let mirror = null;
+    function measureLines(lineHeight) {
+        if (!mirror) {
+            mirror = inputArea.cloneNode(false);
+            mirror.removeAttribute('id');
+            mirror.setAttribute('aria-hidden', 'true');
+            mirror.tabIndex = -1;
+            Object.assign(mirror.style, { position: 'absolute', visibility: 'hidden', pointerEvents: 'none', top: '0', left: '0', height: '0px', transition: 'none' });
+            inputArea.parentElement.appendChild(mirror);
+        }
+        mirror.style.width = `${inputArea.offsetWidth}px`;
+        mirror.value = inputArea.value;
+        const padding = parseFloat(getComputedStyle(mirror).paddingTop) + parseFloat(getComputedStyle(mirror).paddingBottom);
+        return Math.max(1, Math.round((mirror.scrollHeight - padding) / lineHeight));
+    }
+
+    function autoResize() {
+        if (window.innerWidth > MOBILE_MAX_WIDTH) {
+            inputArea.style.height = '';
+            inputArea.style.overflowY = '';
+            return;
+        }
+        const style = getComputedStyle(inputArea);
+        const lineHeight = parseFloat(style.lineHeight);
+        const extra = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+            + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+        const contentLines = measureLines(lineHeight);
+        const lines = Math.min(contentLines, MAX_LINES);
+        // 高度剛好是整數行，不會出現半行字
+        inputArea.style.height = `${Math.ceil(lines * lineHeight + extra)}px`;
+        inputArea.style.overflowY = contentLines > MAX_LINES ? 'auto' : 'hidden';
+    }
+    inputArea.addEventListener('input', autoResize);
+    window.addEventListener('resize', autoResize);
+    // 等其他腳本還原上次的輸入內容後再量一次
+    setTimeout(autoResize, 0);
+
     // 清除按鈕邏輯
     if (clearBtn) {
         const toggleClearBtn = () => {
@@ -87,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         isRecording = true;
         voiceBtn.classList.add('recording');
         voiceBtn.title = '停止語音輸入';
+        voiceBtn.setAttribute('aria-label', '停止語音輸入');
+        hideMessage();
         inputArea.placeholder = '🔊 正在聆聽中，請說話...';
         inputArea.classList.add('voice-active');
         
@@ -133,13 +194,13 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Speech recognition error:', event.error);
         
         if (event.error === 'not-allowed') {
-            alert('語音辨識失敗：請允許瀏覽器取得您的麥克風存取權限。');
+            showMessage('沒有麥克風權限。請在瀏覽器設定中允許這個網站使用麥克風。');
         } else if (event.error === 'no-speech') {
             // 靜默處理無語音狀態
         } else if (event.error === 'network') {
-            alert('語音辨識失敗：請檢查您的網路連線。');
+            showMessage('語音辨識需要網路，請檢查連線後再試一次。');
         } else {
-            alert(`語音辨識發生錯誤：${event.error}`);
+            showMessage(`語音辨識沒有成功（${event.error}），請再試一次。`);
         }
         cleanup();
     };
@@ -154,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isRecording = false;
         voiceBtn.classList.remove('recording');
         voiceBtn.title = '語音輸入 (國語)';
+        voiceBtn.setAttribute('aria-label', '語音輸入（國語）');
         inputArea.placeholder = originalPlaceholder;
         inputArea.classList.remove('voice-active');
     }
