@@ -161,7 +161,7 @@ textarea {
     min-height: 200px;
     max-height: 500px;
     padding: 1rem;
-    font-size: 24px; /* Default font size, overridden by JS */
+    font-size: 28px; /* Default font size, overridden by JS */
     line-height: 2.2;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 12px;
@@ -199,6 +199,16 @@ textarea:focus {
     font-size: 1em;
 }
 
+/* 標點併在相鄰的字裡，跟著字一起換行 */
+.zhuyin-punct {
+    font-size: 1em;
+}
+
+/* 接在注音後面的標點：留出右上角聲調的空間 */
+.zhuyin-bopomofo + .zhuyin-punct {
+    margin-left: 0.3em;
+}
+
 .zhuyin-bopomofo {
     font-size: 0.52em;
     color: var(--zhuyin-color);
@@ -230,9 +240,8 @@ textarea:focus {
 
 .bopo-tone.tone-mark {
     position: absolute;
-    right: -0.7em; /* Bring tone mark closer to the zhuyin symbols */
-    top: 50%;
-    transform: translateY(-50%);
+    right: -0.7em; /* 二、三、四聲標於注音右上角外緣（教育部規格，見 docs/zhuyin-guide.md） */
+    top: 0;
     writing-mode: horizontal-tb;
     font-size: 1em; /* Align font size */
 }

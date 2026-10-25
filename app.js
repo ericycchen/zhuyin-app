@@ -161,20 +161,7 @@ const pinyinToZhuyin = function (pinyinText) {
             .replace(/\u200b'/g, '');
 
         let toneSymbol = toneNumberToSymbol[token.tone] !== undefined ? toneNumberToSymbol[token.tone] : '';
-        
-        let html = '<span class="bopo-container">';
-        if (token.tone === 5 || token.tone === 0) {
-            html += `<span class="bopo-tone tone-light">${toneSymbol}</span>`;
-            html += `<span class="bopo-chars">${zy}</span>`;
-        } else {
-            html += `<span class="bopo-chars">${zy}</span>`;
-            if (toneSymbol) {
-                html += `<span class="bopo-tone tone-mark">${toneSymbol}</span>`;
-            }
-        }
-        html += '</span>';
-        
-        return html;
+        return ZhuyinRender.bopoHtml(zy, toneSymbol);
     }).join('');
 };
 
@@ -270,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             finalHtml = finalHtml.replace(/\n/g, '<br>').replace(/<br\/>/g, '<br>');
             
             outputArea.innerHTML = finalHtml;
+            ZhuyinRender.attachPunctuation(outputArea);
             
         } catch (error) {
             console.error(error);
