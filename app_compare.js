@@ -4,16 +4,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontSizeSlider = document.getElementById('font-size-slider');
     
     if (fontSizeSlider) {
+        // 字級滑桿只控制結果區；輸入框字級由 CSS 固定
+        try {
+            const savedSize = parseInt(localStorage.getItem('zhuyin_font_size'), 10);
+            if (savedSize >= +fontSizeSlider.min && savedSize <= +fontSizeSlider.max) {
+                fontSizeSlider.value = savedSize;
+            }
+        } catch (e) { /* localStorage 無法使用時維持預設值 */ }
+
         function updateFontSizes() {
             outputArea.style.fontSize = `${fontSizeSlider.value}px`;
-            if (window.innerWidth > 768) {
-                inputArea.style.fontSize = `${fontSizeSlider.value}px`;
-            } else {
-                inputArea.style.fontSize = '1.2rem';
-            }
         }
-        fontSizeSlider.addEventListener('input', updateFontSizes);
-        window.addEventListener('resize', updateFontSizes);
+        fontSizeSlider.addEventListener('input', () => {
+            updateFontSizes();
+            try { localStorage.setItem('zhuyin_font_size', fontSizeSlider.value); } catch (e) {}
+        });
         updateFontSizes();
     }
 

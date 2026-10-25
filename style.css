@@ -1,10 +1,12 @@
 :root {
     --primary-color: #6366f1;
     --primary-light: #818cf8;
+    --zhuyin-color: #4f46e5;
     --bg-gradient-start: #e0e7ff;
     --bg-gradient-end: #f3e8ff;
     --text-main: #1e293b;
     --text-muted: #64748b;
+    --text-secondary: #475569;
     --panel-bg: rgba(255, 255, 255, 0.7);
     --panel-border: rgba(255, 255, 255, 0.4);
     --panel-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
@@ -63,7 +65,7 @@ header p {
 
 .version-nav a {
     text-decoration: none;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.4);
@@ -74,7 +76,7 @@ header p {
 
 .version-nav a:hover {
     background: rgba(255, 255, 255, 0.8);
-    color: var(--primary-color);
+    color: var(--zhuyin-color);
 }
 
 .version-nav a.active {
@@ -198,8 +200,8 @@ textarea:focus {
 }
 
 .zhuyin-bopomofo {
-    font-size: 0.45em;
-    color: var(--primary-color);
+    font-size: 0.52em;
+    color: var(--zhuyin-color);
     font-weight: 500;
     user-select: none;
     margin-left: 2px;
@@ -485,7 +487,7 @@ textarea.voice-active {
     }
     
     textarea {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         padding: 0.35rem 5.2rem 0.35rem 0.5rem !important; /* Ensure space for both buttons */
         line-height: 1.35 !important;
         height: 100%;
