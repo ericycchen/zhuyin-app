@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="stepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="840" height="440" rx="16" fill="url(#bgGrad2)" />
+
+  <!-- Title -->
+  <text x="40" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="22" font-weight="700" fill="#f8fafc">
+    Microsoft Word 內建「注音標示」四步操作圖解
+  </text>
+  <text x="40" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="14" fill="#94a3b8">
+    免安裝任何字型，在文書處理軟體中為特定單字或詞彙添加直式注音
+  </text>
+
+  <!-- Step 1 -->
+  <g transform="translate(40, 105)">
+    <rect width="170" height="290" rx="10" fill="url(#stepGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect x="16" y="16" width="30" height="30" rx="15" fill="#6366f1" />
+    <text x="31" y="37" font-family="sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+    <text x="56" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="15" font-weight="600" fill="#f8fafc">選取目標文字</text>
+    
+    <!-- Illustration -->
+    <rect x="20" y="75" width="130" height="110" rx="6" fill="#0f172a" stroke="#475569" />
+    <text x="32" y="125" font-family="'Noto Sans TC', sans-serif" font-size="14" fill="#64748b">這是一篇</text>
+    <!-- Highlighted Char -->
+    <rect x="88" y="105" width="28" height="30" fill="#3b82f6" rx="3" />
+    <text x="102" y="126" font-family="'Noto Sans TC', sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">好</text>
+    <text x="120" y="125" font-family="'Noto Sans TC', sans-serif" font-size="14" fill="#64748b">文章</text>
+
+    <text x="20" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1" font-weight="500">
+      滑鼠反白想要標注的國字（可單字、生字或整句）。
+    </text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(235, 105)">
+    <rect width="170" height="290" rx="10" fill="url(#stepGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect x="16" y="16" width="30" height="30" rx="15" fill="#6366f1" />
+    <text x="31" y="37" font-family="sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+    <text x="56" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="15" font-weight="600" fill="#f8fafc">點擊注音標示</text>
+
+    <!-- Toolbar Illustration -->
+    <rect x="20" y="75" width="130" height="110" rx="6" fill="#0f172a" stroke="#475569" />
+    <rect x="35" y="95" width="60" height="65" rx="6" fill="#1e293b" stroke="#6366f1" stroke-width="2" />
+    <!-- Phonetic icon simulation -->
+    <text x="65" y="118" font-family="sans-serif" font-size="10" fill="#38bdf8" text-anchor="middle">abc</text>
+    <text x="65" y="145" font-family="'Noto Sans TC', sans-serif" font-size="24" font-weight="700" fill="#f8fafc" text-anchor="middle">文</text>
+
+    <text x="20" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1" font-weight="500">
+      於「常用 (Home)」工具列字型區塊點選【注音標示】。
+    </text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(430, 105)">
+    <rect width="180" height="290" rx="10" fill="url(#stepGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect x="16" y="16" width="30" height="30" rx="15" fill="#6366f1" />
+    <text x="31" y="37" font-family="sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+    <text x="56" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="15" font-weight="600" fill="#f8fafc">確認/修改讀音</text>
+
+    <!-- Dialog Mockup -->
+    <rect x="16" y="75" width="148" height="115" rx="6" fill="#0f172a" stroke="#475569" />
+    <rect x="24" y="85" width="132" height="24" rx="4" fill="#1e293b" />
+    <text x="32" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="11" fill="#94a3b8">基底：好</text>
+    <text x="85" y="101" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="11" fill="#38bdf8">讀音：ㄏㄠˇ</text>
+    <text x="30" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="10" fill="#64748b">對齊：居中 / 靠右</text>
+    <text x="30" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="10" fill="#64748b">字型與位移偏移</text>
+
+    <text x="16" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1" font-weight="500">
+      自動帶出教育部拼法，若遇到破音字可在此直接鍵盤修改。
+    </text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(635, 105)">
+    <rect width="165" height="290" rx="10" fill="url(#stepGrad)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="16" y="16" width="30" height="30" rx="15" fill="#10b981" />
+    <text x="31" y="37" font-family="sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+    <text x="56" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="15" font-weight="600" fill="#f8fafc">排版完成</text>
+
+    <!-- Output Illustration -->
+    <rect x="18" y="75" width="128" height="115" rx="6" fill="#0f172a" stroke="#10b981" />
+    <g transform="translate(48, 105)">
+      <text x="0" y="38" font-family="'Noto Sans TC', serif" font-size="38" font-weight="700" fill="#ffffff">好</text>
+      <!-- Zhuyin column -->
+      <text x="44" y="20" font-family="'Noto Sans TC', sans-serif" font-size="15" fill="#34d399">ㄏ</text>
+      <text x="44" y="36" font-family="'Noto Sans TC', sans-serif" font-size="15" fill="#34d399">ㄠ</text>
+      <text x="56" y="24" font-family="'Noto Sans TC', sans-serif" font-size="11" fill="#f43f5e" font-weight="700">ˇ</text>
+    </g>
+
+    <text x="16" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1" font-weight="500">
+      點選確認後，指定字元即完整嵌入直式注音！
+    </text>
+  </g>
+</svg>

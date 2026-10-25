@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="cardGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="840" height="450" rx="16" fill="url(#bgGrad3)" />
+
+  <!-- Title -->
+  <text x="40" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="22" font-weight="700" fill="#f8fafc">
+    網頁直式注音三大渲染方案特性比對
+  </text>
+  <text x="40" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="14" fill="#94a3b8">
+    根據專案類型、排版精確度與互動需求選擇最佳實作架構
+  </text>
+
+  <!-- Option 1: Native HTML5 Ruby -->
+  <g transform="translate(40, 105)">
+    <rect width="235" height="305" rx="12" fill="url(#cardGrad3)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="18" y="18" width="85" height="26" rx="13" fill="rgba(56, 189, 248, 0.15)" />
+    <text x="60" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" font-weight="700" fill="#38bdf8" text-anchor="middle">原生標準</text>
+    <text x="18" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="17" font-weight="700" fill="#f8fafc">HTML5 &lt;ruby&gt;</text>
+    
+    <text x="18" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#94a3b8">● 核心語法：</text>
+    <rect x="18" y="115" width="200" height="42" rx="6" fill="#0b1120" />
+    <text x="28" y="133" font-family="monospace" font-size="11" fill="#38bdf8">&lt;ruby&gt;好&lt;rt&gt;ㄏㄠˇ&lt;/rt&gt;&lt;/ruby&gt;</text>
+    <text x="28" y="148" font-family="monospace" font-size="11" fill="#94a3b8">ruby-position: right;</text>
+
+    <text x="18" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1">優勢：</text>
+    <text x="18" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#94a3b8">✓ W3C 語意標籤，SEO/閱讀器友善</text>
+    <text x="18" y="226" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#94a3b8">✓ 零字型檔案載入，速度最快</text>
+
+    <text x="18" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1">適用：</text>
+    <text x="18" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#38bdf8">部落格文章、少量生難字標注</text>
+  </g>
+
+  <!-- Option 2: Web Font -->
+  <g transform="translate(300, 105)">
+    <rect width="235" height="305" rx="12" fill="url(#cardGrad3)" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="18" y="18" width="85" height="26" rx="13" fill="rgba(129, 140, 248, 0.15)" />
+    <text x="60" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" font-weight="700" fill="#818cf8" text-anchor="middle">出版級品質</text>
+    <text x="18" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="17" font-weight="700" fill="#f8fafc">開源注音 Web Font</text>
+
+    <text x="18" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#94a3b8">● 核心語法：</text>
+    <rect x="18" y="115" width="200" height="42" rx="6" fill="#0b1120" />
+    <text x="28" y="133" font-family="monospace" font-size="11" fill="#818cf8">&lt;span class="zhuyin"&gt;好&lt;/span&gt;</text>
+    <text x="28" y="148" font-family="monospace" font-size="11" fill="#94a3b8">font-family: 'Iansui Bopomofo'</text>
+
+    <text x="18" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1">優勢：</text>
+    <text x="18" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#94a3b8">✓ 聲調定位 100% 完美，永不破版</text>
+    <text x="18" y="226" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#94a3b8">✓ HTML 最簡潔，只要改 class</text>
+
+    <text x="18" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1">適用：</text>
+    <text x="18" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#818cf8">線上繪本、國語文教材、童書閱讀</text>
+  </g>
+
+  <!-- Option 3: Custom Flexbox Component -->
+  <g transform="translate(560, 105)">
+    <rect width="240" height="305" rx="12" fill="url(#cardGrad3)" stroke="#f43f5e" stroke-width="1.5" />
+    <rect x="18" y="18" width="85" height="26" rx="13" fill="rgba(244, 63, 94, 0.15)" />
+    <text x="60" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" font-weight="700" fill="#f43f5e" text-anchor="middle">極致彈性</text>
+    <text x="18" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="17" font-weight="700" fill="#f8fafc">CSS Flexbox 元件</text>
+
+    <text x="18" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#94a3b8">● 核心語法（本 App 架構）：</text>
+    <rect x="18" y="115" width="205" height="42" rx="6" fill="#0b1120" />
+    <text x="26" y="133" font-family="monospace" font-size="10" fill="#f43f5e">&lt;span class="zhuyin-word"&gt;...&lt;/span&gt;</text>
+    <text x="26" y="148" font-family="monospace" font-size="10" fill="#94a3b8">display: inline-flex; align-items...</text>
+
+    <text x="18" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1">優勢：</text>
+    <text x="18" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#94a3b8">✓ 支援破音字點擊切換、發音按鈕</text>
+    <text x="18" y="226" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#94a3b8">✓ 注音字級、色彩自由控制</text>
+
+    <text x="18" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="13" fill="#cbd5e1">適用：</text>
+    <text x="18" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif" font-size="12" fill="#f43f5e">注音教學 Web App、互動測驗系統</text>
+  </g>
+</svg>
