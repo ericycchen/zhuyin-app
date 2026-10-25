@@ -348,7 +348,8 @@ textarea:focus {
     gap: 0.75rem;
 }
 
-.print-btn {
+.print-btn,
+.tool-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -365,17 +366,17 @@ textarea:focus {
     transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.print-btn:hover:not(:disabled) {
+.tool-btn:hover:not(:disabled) {
     background: #eef2ff;
     box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
 }
 
-.print-btn:focus-visible {
+.tool-btn:focus-visible {
     outline: 2px solid var(--zhuyin-color);
     outline-offset: 2px;
 }
 
-.print-btn:disabled {
+.tool-btn:disabled {
     color: var(--text-secondary);
     opacity: 0.6;
     cursor: not-allowed;
@@ -385,6 +386,81 @@ textarea:focus {
     width: 18px;
     height: 18px;
     fill: currentColor;
+}
+
+/* 複製選單 */
+.copy-wrap {
+    position: relative;
+}
+
+.copy-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 30;
+    min-width: 15rem;
+    padding: 0.35rem;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(31, 38, 135, 0.18);
+}
+
+.copy-menu[hidden] {
+    display: none;
+}
+
+.copy-menu [role="menuitem"] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.55rem 0.8rem;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-main);
+}
+
+.copy-menu [role="menuitem"]:hover,
+.copy-menu [role="menuitem"]:focus-visible {
+    background: #eef2ff;
+    outline: none;
+}
+
+.copy-menu .menu-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.copy-menu .menu-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* 複製完成的提示 */
+.output-message {
+    margin: -0.3rem 0 0.6rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 10px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+    font-size: 0.9rem;
+}
+
+.output-message.is-error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+.output-message[hidden] {
+    display: none;
 }
 
 /* Scrollbar styles for output content */
@@ -700,18 +776,24 @@ textarea.voice-active {
         gap: 0.4rem;
     }
 
-    .print-btn {
+    .print-btn,
+    .tool-btn {
         min-height: 36px;
         padding: 0 0.6rem;
         position: relative;
     }
 
+    .output-message {
+        font-size: 0.8rem;
+        margin: -0.2rem 0 0.4rem;
+    }
+
     /* 手機只顯示圖示，觸控範圍延伸到 44px */
-    .print-btn .print-label {
+    .tool-btn .print-label {
         display: none;
     }
 
-    .print-btn::after {
+    .tool-btn::after {
         content: '';
         position: absolute;
         left: -4px;
@@ -798,6 +880,7 @@ textarea.voice-active {
     .input-section,
     .output-header,
     .diff-legend,
+    .output-message,
     .placeholder-text {
         display: none !important;
     }
