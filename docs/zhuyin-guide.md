@@ -239,9 +239,10 @@ document.querySelectorAll('.zhuyin-word.heteronym').forEach(word => {
 
 ## 附錄：辦公室桌面軟體標注參考（Word / Google Docs）
 
-> 💡 傳統桌面文書軟體主要適用於離線文件或列印教材，提供以下簡要途徑供參考：
-> 1. **安裝開源注音字型**：
->    * 下載安裝「教育部標準楷書注音字型」或「芫荽注音字型」，在 Word / PPT 中反白選取特定文字，直接切換字體即可自動顯示直式注音。
-> 2. **Microsoft Word 內建注音標示**：
->    * 選取文字 ➔ 點選「常用」工具列中的 **注音標示 (Phonetic Guide)** 按鈕 ➔ 自動查詢教育部讀音並可手動微調破音字。
->    * ![Word 操作步驟流程](./assets/word-phonetic-guide-diagram.svg)
+> 💡 傳統桌面文書軟體（Word / Google Docs / PPT）主要用於離線列印或講義排版。若有辦公軟體排版需求，可參考以下簡要途徑與官方文件：
+> 1. **安裝開源注音字型（最推薦）**：
+>    * 下載並安裝 [教育部標準楷書注音字型](https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/kai/cseekai.htm) 或 [芫荽注音字型 (Iansui Bopomofo)](https://github.com/ButTaiwan/iansui)，選取文字直接切換字體即可自動呈現直式注音。
+> 2. **Microsoft Word 內建「注音標示」**：
+>    * 選取文字 ➔ 於「常用」工具列點擊「注音標示 (Phonetic Guide)」按鈕，詳見 [微軟官方 Office 注音標示說明文件](https://support.microsoft.com/)。
+> 3. **Google Docs / 簡報**：
+>    * 建議從本 Web App 產生注音後，直接利用上述之「一鍵複製富文本」功能貼入文件，或使用螢幕截圖插入圖片。
