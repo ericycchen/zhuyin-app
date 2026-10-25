@@ -158,19 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buildFastHtml(data) {
         if (!data) return '';
-        const { zy, toneSymbol, tone } = data;
-        let html = '<span class="bopo-container">';
-        if (tone === 5 || tone === 0) {
-            html += `<span class="bopo-tone tone-light">${toneSymbol}</span>`;
-            html += `<span class="bopo-chars">${zy}</span>`;
-        } else {
-            html += `<span class="bopo-chars">${zy}</span>`;
-            if (toneSymbol) {
-                html += `<span class="bopo-tone tone-mark">${toneSymbol}</span>`;
-            }
-        }
-        html += '</span>';
-        return html;
+        return ZhuyinRender.bopoHtml(data.zy, data.toneSymbol);
     }
 
     function getNormalizedBopo(str) {
@@ -184,33 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bopoStr) return '';
         bopoStr = bopoStr.replace(/<[^>]+>/g, '').replace(/（.*?）|\(.*?\)/g, '').trim();
         
-        let tone = '';
-        let chars = bopoStr;
-        const toneMarks = ['˙', 'ˊ', 'ˇ', 'ˋ'];
-        
-        if (bopoStr.startsWith('˙')) {
-            tone = '˙';
-            chars = bopoStr.substring(1);
-        } else {
-            const lastChar = bopoStr.slice(-1);
-            if (toneMarks.includes(lastChar)) {
-                tone = lastChar;
-                chars = bopoStr.slice(0, -1);
-            }
-        }
-        
-        let html = '<span class="bopo-container">';
-        if (tone === '˙') {
-            html += `<span class="bopo-tone tone-light">${tone}</span>`;
-            html += `<span class="bopo-chars">${chars}</span>`;
-        } else {
-            html += `<span class="bopo-chars">${chars}</span>`;
-            if (tone) {
-                html += `<span class="bopo-tone tone-mark">${tone}</span>`;
-            }
-        }
-        html += '</span>';
-        return html;
+        const { chars, tone } = ZhuyinRender.splitTone(bopoStr);
+        return ZhuyinRender.bopoHtml(chars, tone);
     }
 
     // Moedict Cache
@@ -394,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         outputArea.innerHTML = tempDiv.innerHTML.replace(/\n/g, '<br>').replace(/<br\/>/g, '<br>');
+        ZhuyinRender.attachPunctuation(outputArea);
     }
 
     inputArea.addEventListener('keydown', (e) => {
