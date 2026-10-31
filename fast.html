@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注音小幫手 - 即時極速版</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入自訂樣式 -->
+    <link rel="stylesheet" href="style.css?v=28">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>注音小幫手</h1>
+            <p class="tagline">輸入中文，立即轉換為帶有注音符號的文字</p>
+            <nav class="version-nav">
+                <a href="index.html" title="即時轉換並自動以教育部辭典校對讀音（推薦預設）">🔍 智慧推薦</a>
+                <a href="fast.html" title="打字立即轉換，完全不需網路" class="active">⚡️ 即時極速</a>
+                <a href="moedict.html" title="直接查詢教育部國語辭典，需網路連線">📖 辭典精準</a>
+            </nav>
+            <p class="version-hint">⚡️ 即時極速：打字立即轉換，不需網路即可使用；少數多音字可能需手動確認。</p>
+        </header>
+        
+        <main class="main-content">
+            <div class="input-section glass-panel">
+                <label for="chinese-input">輸入中文字：</label>
+                <div class="textarea-container">
+                    <textarea id="chinese-input" placeholder="請在此輸入想要轉換的中文字..."></textarea>
+                    <button id="clear-input-btn" class="clear-input-btn" type="button" title="清除輸入內容" aria-label="清除輸入內容">
+                        <svg class="clear-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                    <button id="voice-input-btn" class="voice-input-btn" type="button" title="語音輸入 (國語)" aria-label="語音輸入（國語）">
+                        <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                        </svg>
+                    </button>
+                    <p id="input-message" class="input-message" role="status" aria-live="polite" hidden></p>
+                </div>
+            </div>
+            
+            <div class="output-section glass-panel">
+                <div class="output-header">
+                    <h2 class="output-title">注音結果：</h2>
+                    <div class="output-tools">
+                        <div class="font-size-control">
+                            <span>小</span>
+                            <input type="range" id="font-size-slider" min="16" max="72" value="28" aria-label="注音結果字級">
+                            <span>大</span>
+                        </div>
+                        <div class="copy-wrap">
+                            <button id="copy-btn" class="tool-btn" type="button" aria-label="複製注音結果" title="複製注音結果" aria-haspopup="menu" aria-expanded="false" aria-controls="copy-menu" disabled>
+                                <svg class="print-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                                <span class="print-label">複製</span>
+                            </button>
+                            <div id="copy-menu" class="copy-menu" role="menu" aria-label="複製方式" hidden>
+                                <button type="button" role="menuitem" data-action="text">
+                                    <span class="menu-title">複製文字</span>
+                                    <span class="menu-hint">貼到 Word、Google 文件，可編輯</span>
+                                </button>
+                                <button type="button" role="menuitem" data-action="image">
+                                    <span class="menu-title">複製圖片</span>
+                                    <span class="menu-hint">貼到 LINE、簡報</span>
+                                </button>
+                            </div>
+                        </div>
+                        <button id="print-btn" class="print-btn tool-btn" type="button" aria-label="列印注音結果" title="列印注音結果" disabled>
+                            <svg class="print-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+                            </svg>
+                            <span class="print-label">列印</span>
+                        </button>
+                        <button id="reading-btn" class="tool-btn" type="button" aria-label="大字閱讀模式" title="大字閱讀模式（全螢幕顯示結果）" disabled>
+                            <svg class="print-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            </svg>
+                            <span class="print-label">大字</span>
+                        </button>
+                        <button id="reading-exit-btn" class="tool-btn reading-exit-btn" type="button" aria-label="離開大字閱讀模式" title="離開大字閱讀模式（Esc）">
+                            <svg class="print-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                            </svg>
+                            <span class="print-label">離開</span>
+                        </button>
+                    </div>
+                </div>
+                <p id="output-message" class="output-message" role="status" aria-live="polite" hidden></p>
+                <div id="zhuyin-output" class="output-content">
+                    <span class="placeholder-text">轉換結果將顯示於此...</span>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by pinyin-pro</p>
+        </footer>
+    </div>
+
+    <!-- 引入 pinyin-pro 函式庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.27.0/dist/index.js"></script>
+    <!-- 引入應用程式邏輯 -->
+    <script src="render.js?v=1"></script>
+    <script src="app.js?v=22"></script>
+    <!-- 引入簡繁轉換庫 (用於將語音辨識之簡體字轉為繁體) -->
+    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+    <!-- 引入語音輸入邏輯 -->
+    <script src="voice-input.js?v=3"></script>
+    <script src="print.js?v=1"></script>
+    <script src="copy.js?v=1"></script>
+    <script src="reading.js?v=1"></script>
+    <script>
+        if (window.visualViewport) {
+            const adjustForKeyboard = () => {
+                if (window.innerWidth <= 768) {
+                    document.body.style.height = window.visualViewport.height + 'px';
+                    document.body.style.overflow = 'hidden';
+                    const container = document.querySelector('.app-container');
+                    if (container) container.style.height = (window.visualViewport.height - 16) + 'px';
+                } else {
+                    document.body.style.height = '';
+                    document.body.style.overflow = '';
+                    const container = document.querySelector('.app-container');
+                    if (container) container.style.height = '';
+                }
+            };
+            window.visualViewport.addEventListener('resize', adjustForKeyboard);
+            window.visualViewport.addEventListener('scroll', adjustForKeyboard);
+            adjustForKeyboard();
+        }
+    </script>
+</body>
+</html>
