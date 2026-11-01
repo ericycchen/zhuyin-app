@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "zhuyin-app"
+  },
+  "targets": {
+    "zhuyin-app": {
+      "hosting": {
+        "prod": [
+          "zhuyin"
+        ],
+        "dev": [
+          "zhuyin-dev"
+        ]
+      }
+    }
   }
 }
