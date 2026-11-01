@@ -117,11 +117,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const recognition = new SpeechRecognition();
     recognition.continuous = false; // 單次語音辨識
-    recognition.interimResults = false; // 只取得最終辨識結果
+    recognition.interimResults = true; // 啟用即時語音辨識預覽
     recognition.lang = 'zh-TW'; // 設定為台灣中文語系
     
     let isRecording = false;
     let originalPlaceholder = inputArea.placeholder;
+    let insertStartPos = 0;
+    let textBeforeInsert = '';
+    let textAfterInsert = '';
+
+    // 單例（Singleton）惰性初始化 OpenCC 簡轉繁轉換器，避免每次說話重複建立字典樹
+    let openccConverter = null;
+    function toTraditionalTW(text) {
+        if (!text || typeof OpenCC === 'undefined') return text;
+        try {
+            if (!openccConverter) {
+                openccConverter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+            }
+            return openccConverter(text);
+        } catch (e) {
+            console.error('OpenCC conversion failed:', e);
+            return text;
+        }
+    }
     
     // 啟動錄音
     function startRecording() {
@@ -162,35 +180,31 @@ document.addEventListener('DOMContentLoaded', () => {
         hideMessage();
         inputArea.placeholder = '🔊 正在聆聽中，請說話...';
         inputArea.classList.add('voice-active');
+
+        // 記錄啟動錄音時的游標區間與上下文，供即時預覽與最終結果覆寫使用
+        insertStartPos = typeof inputArea.selectionStart === 'number' ? inputArea.selectionStart : inputArea.value.length;
+        const insertEndPos = typeof inputArea.selectionEnd === 'number' ? inputArea.selectionEnd : inputArea.value.length;
+        textBeforeInsert = inputArea.value.substring(0, insertStartPos);
+        textAfterInsert = inputArea.value.substring(insertEndPos);
         
-        // 可選：自動聚焦輸入框
+        // 自動聚焦輸入框
         inputArea.focus();
     };
     
-    // 取得語音辨識結果
+    // 取得語音辨識結果（含即時預覽與最終結果）
     recognition.onresult = (event) => {
-        let resultText = event.results[0][0].transcript;
-        if (resultText) {
-            // 自動將簡體中文轉換為繁體中文（台灣標準）
-            if (typeof OpenCC !== 'undefined') {
-                try {
-                    const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-                    resultText = converter(resultText);
-                } catch (e) {
-                    console.error('OpenCC conversion failed:', e);
-                }
-            }
+        let transcript = '';
+        for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
 
-            // 在游標當前位置插入文字，保留原本上下文
-            const startPos = inputArea.selectionStart;
-            const endPos = inputArea.selectionEnd;
-            const originalVal = inputArea.value;
-            
-            const newVal = originalVal.substring(0, startPos) + resultText + originalVal.substring(endPos);
+        if (transcript) {
+            const convertedText = toTraditionalTW(transcript);
+            const newVal = textBeforeInsert + convertedText + textAfterInsert;
             inputArea.value = newVal;
             
             // 更新游標位置至新插入文字的後方
-            const newCursorPos = startPos + resultText.length;
+            const newCursorPos = insertStartPos + convertedText.length;
             inputArea.setSelectionRange(newCursorPos, newCursorPos);
             
             // 儲存至 localStorage 以供跨頁面或重新整理時讀取
@@ -207,8 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (event.error === 'not-allowed') {
             showMessage('沒有麥克風權限。請在瀏覽器設定中允許這個網站使用麥克風。');
-        } else if (event.error === 'no-speech') {
-            // 靜默處理無語音狀態
+        } else if (event.error === 'service-not-allowed') {
+            showMessage('目前瀏覽器環境不允許啟用語音辨識服務，請改用 Chrome 或 Safari 開啟。');
+        } else if (event.error === 'audio-capture') {
+            showMessage('找不到麥克風裝置，請確認麥克風已連接且未被其他程式佔用。');
+        } else if (event.error === 'no-speech' || event.error === 'aborted') {
+            // 靜默處理無語音或主動中止狀態
         } else if (event.error === 'network') {
             showMessage('語音辨識需要網路，請檢查連線後再試一次。');
         } else {

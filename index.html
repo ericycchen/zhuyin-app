@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注音小幫手 - 智慧推薦（比對版）</title>
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="注音小幫手">
+    <title>注音小幫手</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="manifest" href="manifest.webmanifest">
     <!-- 引入 Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=28">
+    <link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
     <div class="app-container">
         <header>
             <h1>注音小幫手</h1>
-            <p class="tagline">輸入中文，立即轉換為帶有注音符號的文字</p>
-            <nav class="version-nav">
-                <a href="index.html" title="即時轉換並自動以教育部辭典校對讀音（推薦預設）" class="active">🔍 智慧推薦</a>
-                <a href="fast.html" title="打字立即轉換，完全不需網路">⚡️ 即時極速</a>
-                <a href="moedict.html" title="直接查詢教育部國語辭典，需網路連線">📖 辭典精準</a>
-            </nav>
-            <p class="version-hint">🔍 智慧推薦：打字即時轉換，並以教育部辭典自動校對多音字，讀音差異一目了然。</p>
+            <p class="tagline">輸入中文，立即轉換為台灣教育部標準注音</p>
         </header>
         
         <main class="main-content">
@@ -45,7 +46,7 @@
             
             <div class="output-section glass-panel">
                 <div class="output-header">
-                    <h2 class="output-title">比對結果：</h2>
+                    <h2 class="output-title">注音結果：</h2>
                     <div class="output-tools">
                         <div class="font-size-control">
                             <span>小</span>
@@ -99,22 +100,27 @@
         </main>
         
         <footer>
-            <p>Powered by pinyin-pro & 萌典 (Moedict)</p>
+            <p class="footer-info">
+                <span>Powered by 字嗨注音詞庫 (ButTaiwan/bpmfvs) & 教育部萌典 (Moedict)</span>
+                <span class="version-badge">v1.2.0</span>
+                <button id="install-app-btn" class="install-app-btn" type="button" title="安裝為獨立桌面／手機 App（支援離線使用）" hidden>📲 安裝 App</button>
+            </p>
         </footer>
     </div>
 
-    <!-- 引入 pinyin-pro 函式庫 -->
-    <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.27.0/dist/index.js"></script>
+    <!-- 引入台灣教育部標準注音與破音字詞庫 -->
+    <script src="tw-zhuyin.js?v=1"></script>
     <!-- 引入應用程式邏輯 -->
     <script src="render.js?v=1"></script>
-    <script src="app_compare.js?v=22"></script>
+    <script src="app_compare.js?v=23"></script>
     <!-- 引入簡繁轉換庫 (用於將語音辨識之簡體字轉為繁體) -->
-    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/cn2t.js"></script>
     <!-- 引入語音輸入邏輯 -->
-    <script src="voice-input.js?v=3"></script>
+    <script src="voice-input.js?v=4"></script>
     <script src="print.js?v=1"></script>
     <script src="copy.js?v=1"></script>
     <script src="reading.js?v=1"></script>
+    <script src="pwa.js?v=1"></script>
     <script>
         if (window.visualViewport) {
             const adjustForKeyboard = () => {
