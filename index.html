@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=32">
+    <link rel="stylesheet" href="style.css?v=33">
 </head>
 <body>
     <div class="app-container">
@@ -104,14 +104,12 @@
     </div>
 
     <!-- 引入台灣教育部標準注音與破音字詞庫 -->
-    <script src="tw-zhuyin.js?v=1"></script>
+    <script src="tw-zhuyin.js?v=2"></script>
     <!-- 引入應用程式邏輯 -->
     <script src="render.js?v=1"></script>
-    <script src="app_compare.js?v=23"></script>
-    <!-- 引入簡繁轉換庫 (用於將語音辨識之簡體字轉為繁體，附加 SRI 雜湊驗證防範供應鏈竄改) -->
-    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/cn2t.js" integrity="sha384-yNJOMWWAWjkIS4ac4UuBSUEalVmzrz5LxWE+lviAdQLnHhWKjWuTs5d3ReXvpWU3" crossorigin="anonymous"></script>
-    <!-- 引入語音輸入邏輯 -->
-    <script src="voice-input.js?v=4"></script>
+    <script src="app_compare.js?v=24"></script>
+    <!-- 引入語音輸入邏輯 (內建按需載入 OpenCC 簡轉繁 + SRI 驗證) -->
+    <script src="voice-input.js?v=5"></script>
     <script src="print.js?v=1"></script>
     <script src="copy.js?v=1"></script>
     <script src="reading.js?v=1"></script>

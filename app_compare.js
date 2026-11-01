@@ -1,5 +1,5 @@
 /**
- * 注音小幫手 - 智慧推薦／比對版 (台灣 ButTaiwan/bpmfvs 本地引擎 + 教育部萌典多字詞組校對)
+ * 注音小幫手 - 主控制邏輯 (台灣 ButTaiwan/bpmfvs 本地引擎 + 多音字手動點擊切換 + 教育部萌典長詞校對)
  */
 document.addEventListener('DOMContentLoaded', () => {
     const inputArea = document.getElementById('chinese-input');
@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let i = 0; i < segChars.length; i++) {
                     const char = segChars[i];
                     if (TaiwanZhuyin.getDefaultCharBopo(char) || /[\u4e00-\u9fff]/.test(char)) {
-                        // 單字若本地已有讀音則不覆蓋；若為生僻字則取萌典單字讀音
                         if (!TaiwanZhuyin.getDefaultCharBopo(char) && moeCache[char]) {
                             moedictResults.push(moeCache[char].split(/[\s\u3000]+/)[0]);
                         } else {
@@ -192,71 +191,96 @@ document.addEventListener('DOMContentLoaded', () => {
             if (container && !container.classList.contains('diff-container')) {
                 const fastRaw = container.getAttribute('data-fast-bopo');
                 if (!isToneSandhiEquivalent(item.char, moeRaw, fastRaw)) {
+                    // 將萌典讀音加入該字的候選清單最前面並切換顯示
+                    const existingCandidates = (container.dataset.candidates || '').split('/').filter(Boolean);
+                    const merged = [moeRaw];
+                    for (const c of existingCandidates) {
+                        if (!merged.includes(c)) merged.push(c);
+                    }
+                    container.dataset.candidates = merged.join('/');
+                    container.dataset.candidateIndex = '0';
+                    container.dataset.moeBopo = moeRaw;
+                    container.classList.add('diff-container', 'polyphonic-word');
+
                     const bopoSpan = container.querySelector('.zhuyin-bopomofo');
-                    const fastHtml = bopoSpan.innerHTML;
-                    const moeHtml = formatBopomofo(moeRaw);
-                    
-                    bopoSpan.outerHTML = `
-                        <span class="zhuyin-bopomofo diff-moe diff-orange">${moeHtml}</span>
-                        <span class="zhuyin-bopomofo diff-fast">${fastHtml}</span>
-                    `;
-                    container.classList.add('diff-container');
-                    makeDiffToggle(container, item.char, moeRaw, fastRaw);
+                    if (bopoSpan) {
+                        bopoSpan.innerHTML = formatBopomofo(moeRaw);
+                        bopoSpan.classList.add('diff-orange');
+                    }
+                    updateWordAria(container);
                 }
             }
         }
         updateLegend();
     }
 
-    // ---------- 差異字：點一下（或 Enter / 空白鍵）切換萌典／極速版讀音 ----------
+    // ---------- 多音字與萌典差異字：點一下（或 Enter / 空白鍵）循環切換候選讀音 ----------
     const legend = document.getElementById('diff-legend');
 
-    function makeDiffToggle(container, char, moeRaw, fastRaw) {
-        container.setAttribute('role', 'button');
-        container.setAttribute('tabindex', '0');
-        container.dataset.char = char;
-        container.dataset.moeBopo = moeRaw;
-        updateDiffLabel(container);
+    function updateWordAria(container) {
+        const char = container.dataset.char || '';
+        const candidates = (container.dataset.candidates || '').split('/').filter(Boolean);
+        const idx = parseInt(container.dataset.candidateIndex || '0', 10);
+        const current = candidates[idx] || container.getAttribute('data-fast-bopo') || '';
+        if (candidates.length > 1) {
+            container.setAttribute('role', 'button');
+            container.setAttribute('tabindex', '0');
+            const others = candidates.filter((_, i) => i !== idx).join('、');
+            container.setAttribute('aria-label', `${char}，目前讀音 ${current}，可點選切換為 ${others}`);
+            container.title = `點一下切換「${char}」的讀音（候選：${candidates.join(' ／ ')}）`;
+        }
     }
 
-    function updateDiffLabel(container) {
-        const showFast = container.classList.contains('show-fast');
-        const moe = container.dataset.moeBopo;
-        const fast = container.getAttribute('data-fast-bopo') || '（無）';
-        container.setAttribute('aria-pressed', String(showFast));
-        container.setAttribute('aria-label', showFast
-            ? `${container.dataset.char}，目前顯示預設讀音 ${fast}，萌典詞組為 ${moe}。按一下切換`
-            : `${container.dataset.char}，目前顯示萌典詞組讀音 ${moe}，預設為 ${fast}。按一下切換`);
-    }
+    function cycleReading(container) {
+        const candidates = (container.dataset.candidates || '').split('/').filter(Boolean);
+        if (candidates.length <= 1) return;
 
-    function toggleDiff(container) {
-        container.classList.toggle('show-fast');
-        updateDiffLabel(container);
+        const nextIdx = (parseInt(container.dataset.candidateIndex || '0', 10) + 1) % candidates.length;
+        const nextBopo = candidates[nextIdx];
+        container.dataset.candidateIndex = String(nextIdx);
+
+        const bopoSpan = container.querySelector('.zhuyin-bopomofo');
+        if (bopoSpan) {
+            bopoSpan.innerHTML = formatBopomofo(nextBopo);
+            if (container.classList.contains('diff-container')) {
+                const isMoe = nextBopo === container.dataset.moeBopo;
+                bopoSpan.classList.toggle('diff-orange', isMoe);
+                container.classList.toggle('show-fast', !isMoe);
+            } else {
+                const isCustom = nextIdx !== 0;
+                container.classList.toggle('user-modified', isCustom);
+            }
+        }
+        updateWordAria(container);
     }
 
     function updateLegend() {
         if (!legend) return;
-        const count = outputArea.querySelectorAll('.diff-container').length;
-        if (count === 0) {
+        const diffCount = outputArea.querySelectorAll('.diff-container').length;
+        const polyCount = outputArea.querySelectorAll('.polyphonic-word').length;
+        if (diffCount > 0) {
+            legend.innerHTML = `有 ${diffCount} 個字與萌典詞組讀音不同，以<span class="diff-sample">橘色底線</span>標示。點一下任何多音字即可切換讀音。`;
+            legend.hidden = false;
+        } else if (polyCount > 0) {
+            legend.innerHTML = `💡 提示：點擊結果區中的多音字（底線標示），即可手動切換該字的其他台灣教育部審訂讀音。`;
+            legend.hidden = false;
+        } else {
             legend.hidden = true;
             legend.textContent = '';
-            return;
         }
-        legend.innerHTML = `有 ${count} 個字讀音不同，以<span class="diff-sample">橘色底線</span>標示（顯示萌典詞組讀音）。點一下可切換讀音。`;
-        legend.hidden = false;
     }
 
     outputArea.addEventListener('click', (e) => {
-        const container = e.target.closest('.diff-container');
-        if (container && outputArea.contains(container)) toggleDiff(container);
+        const container = e.target.closest('.polyphonic-word');
+        if (container && outputArea.contains(container)) cycleReading(container);
     });
 
     outputArea.addEventListener('keydown', (e) => {
         if (e.key !== 'Enter' && e.key !== ' ') return;
-        const container = e.target.closest('.diff-container');
+        const container = e.target.closest('.polyphonic-word');
         if (container) {
             e.preventDefault();
-            toggleDiff(container);
+            cycleReading(container);
         }
     });
 
@@ -277,7 +301,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (token.zhuyin || /[\u4e00-\u9fff]/.test(token.char)) {
                 const fastBopoRaw = getNormalizedBopo(token.zhuyin || '');
                 const fastBopoHtml = fastBopoRaw ? formatBopomofo(fastBopoRaw) : '';
-                finalHtml += `<span class="zhuyin-word" data-char-index="${charIndex}" data-char="${escapeHtml(token.char)}" data-fast-bopo="${fastBopoRaw}"><span class="zhuyin-char">${escapeHtml(token.char)}</span><span class="zhuyin-bopomofo">${fastBopoHtml}</span></span>`;
+                const candidates = (token.candidates || []).map(getNormalizedBopo).filter(Boolean);
+                // 確保目前上下文選出的讀音排在候選清單第一位
+                const ordered = fastBopoRaw ? [fastBopoRaw] : [];
+                for (const c of candidates) {
+                    if (!ordered.includes(c)) ordered.push(c);
+                }
+                const isPoly = ordered.length > 1;
+                const polyClass = isPoly ? ' polyphonic-word' : '';
+                const candAttr = isPoly ? ` data-candidates="${escapeHtml(ordered.join('/'))}" data-candidate-index="0"` : '';
+
+                finalHtml += `<span class="zhuyin-word${polyClass}" data-char-index="${charIndex}" data-char="${escapeHtml(token.char)}" data-fast-bopo="${fastBopoRaw}"${candAttr}><span class="zhuyin-char">${escapeHtml(token.char)}</span><span class="zhuyin-bopomofo">${fastBopoHtml}</span></span>`;
                 charIndex++;
             } else {
                 finalHtml += escapeHtml(token.char);
@@ -285,7 +319,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         outputArea.innerHTML = finalHtml;
+        outputArea.querySelectorAll('.polyphonic-word').forEach(updateWordAria);
         ZhuyinRender.attachPunctuation(outputArea);
+        updateLegend();
     }
 
     inputArea.addEventListener('keydown', (e) => {
