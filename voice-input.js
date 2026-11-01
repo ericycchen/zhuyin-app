@@ -167,6 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 啟動錄音
     function startRecording() {
         ensureOpenCCLoaded();
+        // 先於收起鍵盤前錄下目前游標選取範圍，隨即解除輸入框焦點以收起手機虛擬鍵盤
+        insertStartPos = typeof inputArea.selectionStart === 'number' ? inputArea.selectionStart : inputArea.value.length;
+        const insertEndPos = typeof inputArea.selectionEnd === 'number' ? inputArea.selectionEnd : inputArea.value.length;
+        textBeforeInsert = inputArea.value.substring(0, insertStartPos);
+        textAfterInsert = inputArea.value.substring(insertEndPos);
+        inputArea.blur();
         try {
             recognition.start();
         } catch (e) {
@@ -205,14 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
         inputArea.placeholder = '🔊 正在聆聽中，請說話...';
         inputArea.classList.add('voice-active');
 
-        // 記錄啟動錄音時的游標區間與上下文，供即時預覽與最終結果覆寫使用
-        insertStartPos = typeof inputArea.selectionStart === 'number' ? inputArea.selectionStart : inputArea.value.length;
-        const insertEndPos = typeof inputArea.selectionEnd === 'number' ? inputArea.selectionEnd : inputArea.value.length;
-        textBeforeInsert = inputArea.value.substring(0, insertStartPos);
-        textAfterInsert = inputArea.value.substring(insertEndPos);
-        
-        // 自動聚焦輸入框
-        inputArea.focus();
+        // 保持收起虛擬鍵盤，讓上方注音結果區展開至最大可視空間
+        if (document.activeElement === inputArea) {
+            inputArea.blur();
+        }
     };
     
     // 取得語音辨識結果（含即時預覽與最終結果）
@@ -227,15 +229,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const newVal = textBeforeInsert + convertedText + textAfterInsert;
             inputArea.value = newVal;
             
-            // 更新游標位置至新插入文字的後方
+            // 僅在輸入框已聚焦時更新游標，避免在手機語音輸入途中重新喚起虛擬鍵盤
             const newCursorPos = insertStartPos + convertedText.length;
-            inputArea.setSelectionRange(newCursorPos, newCursorPos);
+            if (document.activeElement === inputArea) {
+                inputArea.setSelectionRange(newCursorPos, newCursorPos);
+            }
             
             // 儲存至 localStorage 以供跨頁面或重新整理時讀取
             localStorage.setItem('zhuyin_input_text', newVal);
             
             // 自動觸發 input 事件，以便網頁中其他的轉換邏輯（app.js/app_moe.js/app_compare.js）即時進行注音轉換
             inputArea.dispatchEvent(new Event('input'));
+            inputArea.scrollTop = inputArea.scrollHeight;
         }
     };
     

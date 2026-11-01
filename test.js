@@ -107,4 +107,17 @@ test('資安規範：外部 CDN script 必須具備 SRI (integrity)', () => {
     }
 });
 
+// 6. 摺疊機／平板虛擬鍵盤視窗自適應與語音輸入滿版防呆檢查
+test('響應式與語音輸入規範：展開鍵盤自適應與語音輸入自動收起鍵盤並撐滿結果區', () => {
+    const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+    const voiceJs = fs.readFileSync(path.join(__dirname, 'voice-input.js'), 'utf8');
+    assert(indexHtml.includes('interactive-widget=resizes-content'), 'index.html viewport 應包含 interactive-widget=resizes-content');
+    assert(indexHtml.includes('compact-viewport'), 'index.html visualViewport 腳本應處理 compact-viewport');
+    assert(styleCss.includes('body.compact-viewport'), 'style.css 應定義 body.compact-viewport 緊湊高度樣式');
+    assert(!styleCss.includes('max-height: 500px'), 'style.css 的 .output-content 不得限制 max-height: 500px，否則鍵盤收起時結果區無法撐滿全螢幕');
+    assert(voiceJs.includes('inputArea.blur()'), 'voice-input.js 啟動語音輸入時應呼叫 inputArea.blur() 收起虛擬鍵盤');
+    assert(!voiceJs.includes('inputArea.focus()') || !voiceJs.split('recognition.onstart')[1].includes('inputArea.focus()'), 'recognition.onstart 不得呼叫 inputArea.focus() 喚起鍵盤');
+});
+
 console.log(`\n🎉 全部 ${passed} 項檢查通過！`);

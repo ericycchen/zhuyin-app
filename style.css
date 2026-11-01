@@ -23,6 +23,7 @@ body {
     font-family: 'Noto Sans TC', sans-serif;
     background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
+    min-height: 100dvh;
     color: var(--text-main);
     display: flex;
     justify-content: center;
@@ -187,13 +188,13 @@ textarea {
     background: rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
     outline: none;
+    overscroll-behavior: contain;
 }
 
 .output-content {
     flex: 1;
     width: 100%;
-    min-height: 200px;
-    max-height: 500px;
+    min-height: 0;
     padding: 1rem;
     font-size: 28px; /* Default font size, overridden by JS */
     line-height: 2.2;
@@ -201,6 +202,7 @@ textarea {
     border-radius: 12px;
     border: 1px solid rgba(0,0,0,0.05);
     overflow-y: auto;
+    overscroll-behavior: contain;
     display: block; /* Use block layout so line-height strictly aligns with textarea */
 }
 
@@ -351,6 +353,7 @@ textarea:focus {
 /* 結果區工具列：字級滑桿與列印按鈕 */
 .output-tools {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
 }
@@ -763,6 +766,172 @@ textarea.voice-active {
     100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 4px 12px rgba(239, 68, 68, 0.2);
     }
+}
+
+/* 摺疊機／平板展開虛擬鍵盤或矮視窗（寬度 > 768px 且可視高度 <= 700px）：
+   收斂垂直間距並讓雙欄面板自適應可視高度，防止頂部標題被推擠裁切 */
+@media (min-width: 769px) and (max-height: 700px) {
+    body:not(.about-page) {
+        align-items: flex-start;
+        padding: 0.6rem 1.25rem;
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    body:not(.about-page) .app-container {
+        height: 100%;
+        max-height: 100%;
+        gap: 0.5rem;
+    }
+
+    body:not(.about-page) .header-row {
+        margin-bottom: 0;
+    }
+
+    body:not(.about-page) header h1 {
+        font-size: 1.4rem;
+    }
+
+    body:not(.about-page) header .tagline {
+        display: none;
+    }
+
+    body:not(.about-page) .main-content {
+        flex: 1;
+        min-height: 0;
+        gap: 1rem;
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    body:not(.about-page) .glass-panel {
+        height: 100%;
+        min-height: 0;
+        padding: 0.85rem 1rem;
+    }
+
+    body:not(.about-page) label,
+    body:not(.about-page) .output-header {
+        margin-bottom: 0.4rem;
+    }
+
+    body:not(.about-page) .output-tools {
+        gap: 0.45rem;
+    }
+
+    body:not(.about-page) .font-size-control input[type="range"] {
+        width: 76px;
+    }
+
+    body:not(.about-page) .print-btn,
+    body:not(.about-page) .tool-btn {
+        min-height: 36px;
+        padding: 0 0.65rem;
+        position: relative;
+    }
+
+    body:not(.about-page) .tool-btn::after {
+        content: '';
+        position: absolute;
+        left: -4px;
+        right: -4px;
+        top: 50%;
+        height: 44px;
+        transform: translateY(-50%);
+    }
+
+    body:not(.about-page) .diff-legend {
+        font-size: 0.82rem;
+        margin: -0.15rem 0 0.35rem;
+    }
+
+    body:not(.about-page) .output-content {
+        max-height: none;
+        padding: 0.75rem;
+    }
+
+    body:not(.about-page) textarea {
+        padding: 0.75rem 6.8rem 0.75rem 0.75rem !important;
+    }
+}
+
+body.compact-viewport:not(.about-page) {
+    align-items: flex-start;
+    padding: 0.6rem 1.25rem;
+    overflow: hidden;
+}
+
+body.compact-viewport:not(.about-page) .app-container {
+    max-height: 100%;
+    gap: 0.5rem;
+}
+
+body.compact-viewport:not(.about-page) .header-row {
+    margin-bottom: 0;
+}
+
+body.compact-viewport:not(.about-page) header h1 {
+    font-size: 1.4rem;
+}
+
+body.compact-viewport:not(.about-page) header .tagline {
+    display: none;
+}
+
+body.compact-viewport:not(.about-page) .main-content {
+    flex: 1;
+    min-height: 0;
+    gap: 1rem;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+body.compact-viewport:not(.about-page) .glass-panel {
+    height: 100%;
+    min-height: 0;
+    padding: 0.85rem 1rem;
+}
+
+body.compact-viewport:not(.about-page) label,
+body.compact-viewport:not(.about-page) .output-header {
+    margin-bottom: 0.4rem;
+}
+
+body.compact-viewport:not(.about-page) .output-tools {
+    gap: 0.45rem;
+}
+
+body.compact-viewport:not(.about-page) .font-size-control input[type="range"] {
+    width: 76px;
+}
+
+body.compact-viewport:not(.about-page) .print-btn,
+body.compact-viewport:not(.about-page) .tool-btn {
+    min-height: 36px;
+    padding: 0 0.65rem;
+    position: relative;
+}
+
+body.compact-viewport:not(.about-page) .tool-btn::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+}
+
+body.compact-viewport:not(.about-page) .diff-legend {
+    font-size: 0.82rem;
+    margin: -0.15rem 0 0.35rem;
+}
+
+body.compact-viewport:not(.about-page) .output-content {
+    max-height: none;
+    padding: 0.75rem;
+}
+
+body.compact-viewport:not(.about-page) textarea {
+    padding: 0.75rem 6.8rem 0.75rem 0.75rem !important;
 }
 
 /* Responsive */

@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <meta name="theme-color" content="#6366f1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=33">
+    <link rel="stylesheet" href="style.css?v=35">
 </head>
 <body>
     <div class="app-container">
@@ -109,7 +109,7 @@
     <script src="render.js?v=1"></script>
     <script src="app_compare.js?v=24"></script>
     <!-- 引入語音輸入邏輯 (內建按需載入 OpenCC 簡轉繁 + SRI 驗證) -->
-    <script src="voice-input.js?v=5"></script>
+    <script src="voice-input.js?v=6"></script>
     <script src="print.js?v=1"></script>
     <script src="copy.js?v=1"></script>
     <script src="reading.js?v=1"></script>
@@ -117,13 +117,22 @@
     <script>
         if (window.visualViewport) {
             const adjustForKeyboard = () => {
-                if (window.innerWidth <= 768) {
-                    document.body.style.height = window.visualViewport.height + 'px';
+                const vvh = window.visualViewport.height;
+                const isMobile = window.innerWidth <= 768;
+                const isCompact = vvh <= 700;
+                document.body.classList.toggle('compact-viewport', !isMobile && isCompact);
+                if (isMobile || isCompact) {
+                    document.body.style.height = vvh + 'px';
+                    document.body.style.minHeight = '0';
                     document.body.style.overflow = 'hidden';
                     const container = document.querySelector('.app-container');
-                    if (container) container.style.height = (window.visualViewport.height - 16) + 'px';
+                    if (container) container.style.height = (vvh - (isMobile ? 16 : 20)) + 'px';
+                    if (window.scrollY !== 0 || window.visualViewport.offsetTop !== 0) {
+                        window.scrollTo(0, 0);
+                    }
                 } else {
                     document.body.style.height = '';
+                    document.body.style.minHeight = '';
                     document.body.style.overflow = '';
                     const container = document.querySelector('.app-container');
                     if (container) container.style.height = '';
@@ -131,6 +140,7 @@
             };
             window.visualViewport.addEventListener('resize', adjustForKeyboard);
             window.visualViewport.addEventListener('scroll', adjustForKeyboard);
+            window.addEventListener('resize', adjustForKeyboard);
             adjustForKeyboard();
         }
     </script>
