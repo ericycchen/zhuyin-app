@@ -108,8 +108,8 @@
     <!-- 引入應用程式邏輯 -->
     <script src="render.js?v=1"></script>
     <script src="app_compare.js?v=23"></script>
-    <!-- 引入簡繁轉換庫 (用於將語音辨識之簡體字轉為繁體) -->
-    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/cn2t.js"></script>
+    <!-- 引入簡繁轉換庫 (用於將語音辨識之簡體字轉為繁體，附加 SRI 雜湊驗證防範供應鏈竄改) -->
+    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/cn2t.js" integrity="sha384-yNJOMWWAWjkIS4ac4UuBSUEalVmzrz5LxWE+lviAdQLnHhWKjWuTs5d3ReXvpWU3" crossorigin="anonymous"></script>
     <!-- 引入語音輸入邏輯 -->
     <script src="voice-input.js?v=4"></script>
     <script src="print.js?v=1"></script>
