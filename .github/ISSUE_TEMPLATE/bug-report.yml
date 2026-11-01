@@ -1,0 +1,20 @@
+name: 🐛 功能問題或建議回報
+description: 回報介面排版、複製、列印、語音輸入或 PWA 安裝問題
+title: "[問題回報] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 1. 問題描述
+      description: 請簡述您遇到的問題或改善建議
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 2. 使用裝置與瀏覽器
+      placeholder: 例如：iPhone 16 (iOS Safari) / Windows 11 (Chrome) / 已安裝獨立 App
+    validations:
+      required: false

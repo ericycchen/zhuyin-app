@@ -1,0 +1,42 @@
+name: 🔤 讀音／破音字錯誤回報
+description: 回報特定單字、詞組或句子的注音讀音與台灣教育部標準不符
+title: "[讀音回報] "
+labels: ["phonetics"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝您協助改善「注音小幫手」的台灣讀音準確度！請填寫以下資訊，協助我們快速將該詞彙加入詞庫與測試集。
+
+  - type: input
+    id: phrase
+    attributes:
+      label: 1. 測試句子或詞組
+      description: 請輸入包含該破音字的完整詞組或句子
+      placeholder: 例如：語音模組還不錯呢
+    validations:
+      required: true
+
+  - type: input
+    id: current_reading
+    attributes:
+      label: 2. 目前顯示的錯誤讀音
+      description: 網站目前將哪個字標成什麼讀音？
+      placeholder: 例如：「還」顯示為 ㄏㄨㄢˊ
+    validations:
+      required: true
+
+  - type: input
+    id: expected_reading
+    attributes:
+      label: 3. 台灣教育部正確讀音
+      description: 根據教育部《重編國語辭典修訂本》或《國語一字多音審訂表》，正確讀音為何？
+      placeholder: 例如：「還」應為 ㄏㄞˊ
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 4. 補充說明或辭典連結（選填）
+      placeholder: 可附上萌典或教育部辭典連結
