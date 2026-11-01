@@ -1,3 +1,6 @@
+/**
+ * 注音小幫手 - 智慧推薦／比對版 (台灣 ButTaiwan/bpmfvs 本地引擎 + 教育部萌典多字詞組校對)
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const inputArea = document.getElementById('chinese-input');
     const outputArea = document.getElementById('zhuyin-output');
@@ -22,143 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFontSizes();
     }
 
-    const { html } = pinyinPro; // Use raw pinyin-pro without customPinyin
-
-    const toneNumberToSymbol = {
-        0: '˙', 1: '', 2: 'ˊ', 3: 'ˇ', 4: 'ˋ', 5: '˙'
-    };
-
-    // pinyin-zhuyin conversion tables
-    const initials = {
-        'b': 'ㄅ', 'p': 'ㄆ', 'm': 'ㄇ', 'f': 'ㄈ',
-        'd': 'ㄉ', 't': 'ㄊ', 'n': 'ㄋ', 'l': 'ㄌ',
-        'g': 'ㄍ', 'k': 'ㄎ', 'h': 'ㄏ',
-        'j': 'ㄐ', 'q': 'ㄑ', 'x': 'ㄒ',
-        'zh': 'ㄓ', 'ch': 'ㄔ', 'sh': 'ㄕ', 'r': 'ㄖ',
-        'z': 'ㄗ', 'c': 'ㄘ', 's': 'ㄙ'
-    };
-
-    const finals = {
-        'a': 'ㄚ', 'o': 'ㄛ', 'e': 'ㄜ', 'e^': 'ㄝ',
-        'ai': 'ㄞ', 'ei': 'ㄟ', 'ao': 'ㄠ', 'ou': 'ㄡ',
-        'an': 'ㄢ', 'en': 'ㄣ', 'ang': 'ㄤ', 'eng': 'ㄥ',
-        'er': 'ㄦ', 'i': 'ㄧ', 'ia': 'ㄧㄚ', 'io': 'ㄧㄛ',
-        'ie': 'ㄧㄝ', 'iai': 'ㄧㄞ', 'iao': 'ㄧㄠ', 'iu': 'ㄧㄡ',
-        'ian': 'ㄧㄢ', 'in': 'ㄧㄣ', 'iang': 'ㄧㄤ', 'ing': 'ㄧㄥ',
-        'u': 'ㄨ', 'ua': 'ㄨㄚ', 'uo': 'ㄨㄛ', 'uai': 'ㄨㄞ',
-        'ui': 'ㄨㄟ', 'uan': 'ㄨㄢ', 'un': 'ㄨㄣ', 'uang': 'ㄨㄤ',
-        'ong': 'ㄨㄥ', 'v': 'ㄩ', 've': 'ㄩㄝ', 'van': 'ㄩㄢ',
-        'vn': 'ㄩㄣ', 'iong': 'ㄩㄥ'
-    };
-
-    const individuals = {
-        'zhi': 'ㄓ', 'chi': 'ㄔ', 'shi': 'ㄕ', 'ri': 'ㄖ',
-        'zi': 'ㄗ', 'ci': 'ㄘ', 'si': 'ㄙ', 'yi': 'ㄧ',
-        'ya': 'ㄧㄚ', 'yo': 'ㄧㄛ', 'ye': 'ㄧㄝ', 'yai': 'ㄧㄞ',
-        'yao': 'ㄧㄠ', 'you': 'ㄧㄡ', 'yan': 'ㄧㄢ', 'yin': 'ㄧㄣ',
-        'yang': 'ㄧㄤ', 'ying': 'ㄧㄥ', 'wu': 'ㄨ', 'wa': 'ㄨㄚ',
-        'wo': 'ㄨㄛ', 'wai': 'ㄨㄞ', 'wei': 'ㄨㄟ', 'wan': 'ㄨㄢ',
-        'wen': 'ㄨㄣ', 'wang': 'ㄨㄤ', 'weng': 'ㄨㄥ', 'yu': 'ㄩ',
-        'yue': 'ㄩㄝ', 'yuan': 'ㄩㄢ', 'yun': 'ㄩㄣ', 'yong': 'ㄩㄥ'
-    };
-
-    function getKeys(obj) { return Object.keys(obj); }
-    function lenComp(a, b) { return b.length - a.length; }
-
-    const individualRexp = new RegExp('^(' + getKeys(individuals).sort(lenComp).join('|') + ')(\\d)?', 'i');
-    const initialFinalRexp = new RegExp('^(' + getKeys(initials).sort(lenComp).join('|') + ')(' + getKeys(finals).sort(lenComp).join('|') + ')(\\d)?', 'i');
-    const initialRexp = new RegExp('^(' + getKeys(initials).sort(lenComp).join('|') + ')(\\d)?', 'i');
-    const finalRexp = new RegExp('^(' + getKeys(finals).sort(lenComp).join('|') + ')(\\d)?', 'i');
-
-    const toneMap = {
-        'ā': 'a1', 'á': 'a2', 'ǎ': 'a3', 'à': 'a4',
-        'ō': 'o1', 'ó': 'o2', 'ǒ': 'o3', 'ò': 'o4',
-        'ē': 'e1', 'é': 'e2', 'ě': 'e3', 'è': 'e4',
-        'ī': 'i1', 'í': 'i2', 'ǐ': 'i3', 'ì': 'i4',
-        'ū': 'u1', 'ú': 'u2', 'ǔ': 'u3', 'ù': 'u4',
-        'ǖ': 'v1', 'ǘ': 'v2', 'ǚ': 'v3', 'ǜ': 'v4',
-        'ü': 'v'
-    };
-
-    function findAccentedChars(str) {
-        for (let key in toneMap) {
-            str = str.replace(new RegExp(key, 'g'), toneMap[key]);
-        }
-        return str;
+    if (typeof TaiwanZhuyin === 'undefined') {
+        outputArea.innerHTML = '<span class="output-error" role="alert">載入台灣注音詞庫失敗，請重新整理頁面。</span>';
+        return;
     }
 
-    function removeAccents(str) {
-        let nStr = str.replace(/\d/g, '');
-        nStr = nStr.replace(/ü/g, 'v');
-        nStr = nStr.replace(/ê/g, 'e^');
-        return nStr;
-    }
-
-    function parseToken(pinyinStr) {
-        let pStr = findAccentedChars(pinyinStr);
-        let tone = pStr.match(/\d/);
-        tone = tone ? parseInt(tone[0]) : 5; // default to light tone if not found
-        
-        let nStr = removeAccents(pStr);
-        let result = { pinyin: pinyinStr, type: 'other', parse: [nStr], tone: tone, zhuyin: nStr };
-
-        let m = individualRexp.exec(nStr);
-        if (m) {
-            result.type = 'individual';
-            result.parse = [m[1], m[2]];
-            result.zhuyin = individuals[m[1].toLowerCase()];
-        } else {
-            m = initialFinalRexp.exec(nStr);
-            if (m) {
-                result.type = 'initialFinal';
-                result.parse = [m[1], m[2], m[3]];
-                result.zhuyin = initials[m[1].toLowerCase()] + finals[m[2].toLowerCase()];
-            } else {
-                m = initialRexp.exec(nStr);
-                if (m) {
-                    result.type = 'initial';
-                    result.parse = [m[1], m[2]];
-                    result.zhuyin = initials[m[1].toLowerCase()];
-                } else {
-                    m = finalRexp.exec(nStr);
-                    if (m) {
-                        result.type = 'final';
-                        result.parse = [m[1], m[2]];
-                        result.zhuyin = finals[m[1].toLowerCase()];
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    function pinyinToZhuyinData(pinyinStr) {
-        let tokens = pinyinStr.split(/\s+/).map(parseToken);
-        if (tokens.length === 0) return null;
-        const token = tokens[0];
-        if (token.type === 'other') return null;
-
-        let zy = token.zhuyin
-            .replace(/ㄐㄨ/g, 'ㄐㄩ')
-            .replace(/ㄑㄨ/g, 'ㄑㄩ')
-            .replace(/ㄒㄨ/g, 'ㄒㄩ')
-            .replace(/ㄓㄧ/g, 'ㄓ')
-            .replace(/ㄔㄧ/g, 'ㄔ')
-            .replace(/ㄕㄧ/g, 'ㄕ')
-            .replace(/ㄖㄧ/g, 'ㄖ')
-            .replace(/ㄗㄧ/g, 'ㄗ')
-            .replace(/ㄘㄧ/g, 'ㄘ')
-            .replace(/ㄙㄧ/g, 'ㄙ')
-            .replace(/\u200b'/g, '');
-
-        let toneSymbol = toneNumberToSymbol[token.tone] !== undefined ? toneNumberToSymbol[token.tone] : '';
-        
-        return { zy, toneSymbol, tone: token.tone };
-    }
-
-    function buildFastHtml(data) {
-        if (!data) return '';
-        return ZhuyinRender.bopoHtml(data.zy, data.toneSymbol);
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
 
     function getNormalizedBopo(str) {
@@ -168,12 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return str;
     }
 
-    function formatMoedictBopomofo(bopoStr) {
+    function formatBopomofo(bopoStr) {
         if (!bopoStr) return '';
-        bopoStr = bopoStr.replace(/<[^>]+>/g, '').replace(/（.*?）|\(.*?\)/g, '').trim();
-        
-        const { chars, tone } = ZhuyinRender.splitTone(bopoStr);
+        const cleaned = getNormalizedBopo(bopoStr);
+        const { chars, tone } = ZhuyinRender.splitTone(cleaned);
         return ZhuyinRender.bopoHtml(chars, tone);
+    }
+
+    // 判斷兩讀音是否僅為「一／不」連讀變調差異（不視為破音錯誤）
+    function isToneSandhiEquivalent(char, bopoA, bopoB) {
+        if (bopoA === bopoB) return true;
+        if (char === '不') {
+            const set = new Set(['ㄅㄨˋ', 'ㄅㄨˊ']);
+            return set.has(bopoA) && set.has(bopoB);
+        }
+        if (char === '一') {
+            const set = new Set(['ㄧ', 'ㄧˊ', 'ㄧˋ']);
+            return set.has(bopoA) && set.has(bopoB);
+        }
+        return false;
     }
 
     // Moedict Cache
@@ -218,11 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
     async function compareWithMoedict(text, currentCompareId) {
         if (!text) return;
         
+        const allChars = Array.from(text);
         const chineseChars = [];
         let charIdx = 0;
-        for (let i = 0; i < text.length; i++) {
-            if (/[\u4e00-\u9fa5]/.test(text[i])) {
-                chineseChars.push({ char: text[i], index: charIdx });
+        for (let i = 0; i < allChars.length; i++) {
+            const ch = allChars[i];
+            if (TaiwanZhuyin.getDefaultCharBopo(ch) || /[\u4e00-\u9fff]/.test(ch)) {
+                chineseChars.push({ char: ch, index: charIdx });
                 charIdx++;
             }
         }
@@ -234,51 +125,56 @@ document.addEventListener('DOMContentLoaded', () => {
             const segmenter = new Intl.Segmenter('zh-TW', { granularity: 'word' });
             segments = Array.from(segmenter.segment(text)).map(s => s.segment);
         } else {
-            segments = text.split('');
+            segments = allChars;
         }
         
+        // 僅針對 2 字以上的完整詞組查詢萌典校對；單字已採用教育部審訂表第一讀音與 poyin_db，不以萌典單字釋義數覆蓋
         const wordsToFetch = new Set();
         segments.forEach(seg => {
-            if (/[\u4e00-\u9fa5]/.test(seg)) wordsToFetch.add(seg);
+            const segChars = Array.from(seg);
+            if (segChars.length >= 2 && /[\u4e00-\u9fff]/.test(seg)) {
+                wordsToFetch.add(seg);
+            }
         });
         
         await Promise.all(Array.from(wordsToFetch).map(word => fetchMoedict(word)));
         
         if (compareIdCounter !== currentCompareId) return; // Abort if a newer compare started
 
-        const charsToFetch = new Set();
-        for (let seg of segments) {
-            if (/[\u4e00-\u9fa5]/.test(seg) && !moeCache[seg]) {
-                for (let char of seg) {
-                    if (/[\u4e00-\u9fa5]/.test(char)) charsToFetch.add(char);
-                }
+        // 若有本地未收錄的生僻字，才向萌典查詢單字補齊
+        const rareCharsToFetch = new Set();
+        for (const item of chineseChars) {
+            if (!TaiwanZhuyin.getDefaultCharBopo(item.char)) {
+                rareCharsToFetch.add(item.char);
             }
         }
-        await Promise.all(Array.from(charsToFetch).map(char => fetchMoedict(char)));
+        await Promise.all(Array.from(rareCharsToFetch).map(char => fetchMoedict(char)));
         
-        if (compareIdCounter !== currentCompareId) return; // Abort if a newer compare started
+        if (compareIdCounter !== currentCompareId) return;
         
-        let moedictResults = []; 
+        const moedictResults = [];
         
         for (let seg of segments) {
-            if (!/[\u4e00-\u9fa5]/.test(seg)) continue;
+            const segChars = Array.from(seg);
+            const hasChinese = segChars.some(ch => TaiwanZhuyin.getDefaultCharBopo(ch) || /[\u4e00-\u9fff]/.test(ch));
+            if (!hasChinese) continue;
             
-            let wordBopo = moeCache[seg];
+            let wordBopo = segChars.length >= 2 ? moeCache[seg] : null;
             if (wordBopo) {
                 const bopoParts = wordBopo.split(/[\s\u3000]+/);
-                for (let i = 0; i < seg.length; i++) {
-                    const char = seg[i];
-                    if (/[\u4e00-\u9fa5]/.test(char)) {
+                for (let i = 0; i < segChars.length; i++) {
+                    const char = segChars[i];
+                    if (TaiwanZhuyin.getDefaultCharBopo(char) || /[\u4e00-\u9fff]/.test(char)) {
                         moedictResults.push(bopoParts[i] || '');
                     }
                 }
             } else {
-                for (let i = 0; i < seg.length; i++) {
-                    const char = seg[i];
-                    if (/[\u4e00-\u9fa5]/.test(char)) {
-                        let charBopo = moeCache[char];
-                        if (charBopo) {
-                            moedictResults.push(charBopo.split(/[\s\u3000]+/)[0]);
+                for (let i = 0; i < segChars.length; i++) {
+                    const char = segChars[i];
+                    if (TaiwanZhuyin.getDefaultCharBopo(char) || /[\u4e00-\u9fff]/.test(char)) {
+                        // 單字若本地已有讀音則不覆蓋；若為生僻字則取萌典單字讀音
+                        if (!TaiwanZhuyin.getDefaultCharBopo(char) && moeCache[char]) {
+                            moedictResults.push(moeCache[char].split(/[\s\u3000]+/)[0]);
                         } else {
                             moedictResults.push('');
                         }
@@ -290,14 +186,15 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < chineseChars.length; i++) {
             const item = chineseChars[i];
             const moeRaw = getNormalizedBopo(moedictResults[i]);
+            if (!moeRaw) continue;
             
             const container = document.querySelector(`.zhuyin-word[data-char-index="${item.index}"]`);
             if (container && !container.classList.contains('diff-container')) {
                 const fastRaw = container.getAttribute('data-fast-bopo');
-                if (moeRaw && moeRaw !== fastRaw) {
+                if (!isToneSandhiEquivalent(item.char, moeRaw, fastRaw)) {
                     const bopoSpan = container.querySelector('.zhuyin-bopomofo');
                     const fastHtml = bopoSpan.innerHTML;
-                    const moeHtml = formatMoedictBopomofo(moedictResults[i]);
+                    const moeHtml = formatBopomofo(moeRaw);
                     
                     bopoSpan.outerHTML = `
                         <span class="zhuyin-bopomofo diff-moe diff-orange">${moeHtml}</span>
@@ -311,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLegend();
     }
 
-    // ---------- 差異字：點一下（或 Enter / 空白鍵）切換萌典／高速版讀音 ----------
+    // ---------- 差異字：點一下（或 Enter / 空白鍵）切換萌典／極速版讀音 ----------
     const legend = document.getElementById('diff-legend');
 
     function makeDiffToggle(container, char, moeRaw, fastRaw) {
@@ -328,8 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const fast = container.getAttribute('data-fast-bopo') || '（無）';
         container.setAttribute('aria-pressed', String(showFast));
         container.setAttribute('aria-label', showFast
-            ? `${container.dataset.char}，目前顯示高速版讀音 ${fast}，萌典為 ${moe}。按一下切換`
-            : `${container.dataset.char}，目前顯示萌典讀音 ${moe}，高速版為 ${fast}。按一下切換`);
+            ? `${container.dataset.char}，目前顯示預設讀音 ${fast}，萌典詞組為 ${moe}。按一下切換`
+            : `${container.dataset.char}，目前顯示萌典詞組讀音 ${moe}，預設為 ${fast}。按一下切換`);
     }
 
     function toggleDiff(container) {
@@ -345,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             legend.textContent = '';
             return;
         }
-        legend.innerHTML = `有 ${count} 個字讀音不同，以<span class="diff-sample">橘色底線</span>標示（顯示萌典讀音）。點一下可切換成高速版讀音。`;
+        legend.innerHTML = `有 ${count} 個字讀音不同，以<span class="diff-sample">橘色底線</span>標示（顯示萌典詞組讀音）。點一下可切換讀音。`;
         legend.hidden = false;
     }
 
@@ -370,48 +267,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const rawHtml = html(text);
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = rawHtml;
-        
-        const rubyElements = tempDiv.querySelectorAll('ruby');
+        const tokens = TaiwanZhuyin.textToTokens(text);
+        let finalHtml = '';
         let charIndex = 0;
-        
-        rubyElements.forEach(ruby => {
-            const chineseSpan = ruby.querySelector('.py-chinese-item');
-            const rt = ruby.querySelector('rt');
-            
-            if (chineseSpan && rt) {
-                const char = chineseSpan.textContent;
-                const pinyinStr = rt.textContent.trim();
-                
-                const data = pinyinStr ? pinyinToZhuyinData(pinyinStr) : null;
-                const fastBopoHtml = data ? buildFastHtml(data) : '';
-                const fastBopoRaw = data ? getNormalizedBopo(data.zy + data.toneSymbol) : '';
-                
-                const newContainer = document.createElement('span');
-                newContainer.className = 'zhuyin-word';
-                newContainer.setAttribute('data-char-index', charIndex);
-                newContainer.setAttribute('data-char', char);
-                newContainer.setAttribute('data-fast-bopo', fastBopoRaw);
-                
-                const newChar = document.createElement('span');
-                newChar.className = 'zhuyin-char';
-                newChar.textContent = char;
-                
-                const newBopomofo = document.createElement('span');
-                newBopomofo.className = 'zhuyin-bopomofo';
-                newBopomofo.innerHTML = fastBopoHtml;
-                
-                newContainer.appendChild(newChar);
-                newContainer.appendChild(newBopomofo);
-                
-                ruby.parentNode.replaceChild(newContainer, ruby);
+
+        for (const token of tokens) {
+            if (token.char === '\n') {
+                finalHtml += '<br>';
+            } else if (token.zhuyin || /[\u4e00-\u9fff]/.test(token.char)) {
+                const fastBopoRaw = getNormalizedBopo(token.zhuyin || '');
+                const fastBopoHtml = fastBopoRaw ? formatBopomofo(fastBopoRaw) : '';
+                finalHtml += `<span class="zhuyin-word" data-char-index="${charIndex}" data-char="${escapeHtml(token.char)}" data-fast-bopo="${fastBopoRaw}"><span class="zhuyin-char">${escapeHtml(token.char)}</span><span class="zhuyin-bopomofo">${fastBopoHtml}</span></span>`;
                 charIndex++;
+            } else {
+                finalHtml += escapeHtml(token.char);
             }
-        });
+        }
         
-        outputArea.innerHTML = tempDiv.innerHTML.replace(/\n/g, '<br>').replace(/<br\/>/g, '<br>');
+        outputArea.innerHTML = finalHtml;
         ZhuyinRender.attachPunctuation(outputArea);
     }
 
@@ -438,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         compareTimer = setTimeout(() => {
             compareIdCounter++;
             compareWithMoedict(text, compareIdCounter);
-        }, 500);
+        }, 400);
     });
 
     // Restore text from localStorage on page load
