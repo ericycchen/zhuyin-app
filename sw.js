@@ -2,11 +2,12 @@
  * 注音小幫手 - Service Worker (v1.2.0)
  * 預快取核心靜態資源與台灣注音詞庫，支援離線獨立 Web App (PWA) 運作。
  */
-const CACHE_NAME = 'zhuyin-app-v1.2.0';
+const CACHE_NAME = 'zhuyin-app-v1.2.1';
 const CORE_ASSETS = [
     './',
     './index.html',
-    './style.css?v=31',
+    './about.html',
+    './style.css?v=32',
     './tw-zhuyin.js?v=1',
     './render.js?v=1',
     './app_compare.js?v=23',
@@ -14,7 +15,7 @@ const CORE_ASSETS = [
     './print.js?v=1',
     './copy.js?v=1',
     './reading.js?v=1',
-    './pwa.js?v=1',
+    './pwa.js?v=2',
     './icon.svg',
     './manifest.webmanifest'
 ];
