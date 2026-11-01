@@ -280,17 +280,35 @@ textarea:focus {
     font-size: 1em; /* Align font size */
 }
 
-/* Comparison diff styling（比對版：萌典與高速版讀音不同的字） */
+/* 多音字與萌典差異字：可點擊手動循環切換讀音 */
+.zhuyin-word.polyphonic-word {
+    cursor: pointer;
+    border-bottom: 1.5px dotted rgba(99, 102, 241, 0.35);
+    border-radius: 0.15em;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.zhuyin-word.polyphonic-word:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-bottom-color: var(--primary-color);
+}
+
+.zhuyin-word.polyphonic-word:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.zhuyin-word.polyphonic-word.user-modified {
+    border-bottom: 0.08em solid var(--primary-color);
+}
+
 .zhuyin-bopomofo.diff-orange {
     color: var(--diff-color);
     font-weight: 700;
 }
 
-.diff-fast {
-    display: none;
-}
-
-/* 點一下切換讀音；底線讓差異不只靠顏色辨識 */
+/* 萌典與本地詞庫讀音不同的字：橘色實線底線 */
 .zhuyin-word.diff-container {
     cursor: pointer;
     border-bottom: 0.08em solid var(--diff-color);
@@ -307,17 +325,9 @@ textarea:focus {
     outline-offset: 2px;
 }
 
-/* 切換到高速版讀音時：底線改為虛線，注音恢復一般顏色 */
+/* 切換至其他候選讀音時：底線改為虛線 */
 .zhuyin-word.diff-container.show-fast {
     border-bottom-style: dashed;
-}
-
-.zhuyin-word.diff-container.show-fast .diff-moe {
-    display: none;
-}
-
-.zhuyin-word.diff-container.show-fast .diff-fast {
-    display: flex;
 }
 
 /* 比對版圖例 */

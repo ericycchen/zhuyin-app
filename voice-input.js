@@ -126,8 +126,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let textBeforeInsert = '';
     let textAfterInsert = '';
 
-    // 單例（Singleton）惰性初始化 OpenCC 簡轉繁轉換器，避免每次說話重複建立字典樹
+    // 按需動態載入（Lazy Load）OpenCC 簡轉繁套件（含 SRI 完整性雜湊驗證），避免首屏載入 1.1MB 字典
+    const OPENCC_CDN = 'https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/cn2t.js';
+    const OPENCC_SRI = 'sha384-yNJOMWWAWjkIS4ac4UuBSUEalVmzrz5LxWE+lviAdQLnHhWKjWuTs5d3ReXvpWU3';
     let openccConverter = null;
+    let openccPromise = null;
+
+    function ensureOpenCCLoaded() {
+        if (typeof OpenCC !== 'undefined') return Promise.resolve();
+        if (openccPromise) return openccPromise;
+        openccPromise = new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = OPENCC_CDN;
+            script.integrity = OPENCC_SRI;
+            script.crossOrigin = 'anonymous';
+            script.async = true;
+            script.onload = () => resolve();
+            script.onerror = () => {
+                openccPromise = null;
+                resolve(); // 載入失敗時仍維持原文字輸出，不阻斷語音輸入
+            };
+            document.head.appendChild(script);
+        });
+        return openccPromise;
+    }
+
     function toTraditionalTW(text) {
         if (!text || typeof OpenCC === 'undefined') return text;
         try {
@@ -143,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 啟動錄音
     function startRecording() {
+        ensureOpenCCLoaded();
         try {
             recognition.start();
         } catch (e) {

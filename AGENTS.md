@@ -23,12 +23,13 @@ flowchart LR
 | :--- | :--- |
 | `index.html` | 唯一主應用程式頁面（單一整合介面）。 |
 | `about.html` | 獨立說明頁（版本資訊、PWA 安裝按鈕、開源詞庫與版權宣告）。 |
-| `tw-zhuyin.js` | **核心台灣注音引擎**：封裝 `ButTaiwan/bpmfvs` 教育部審訂單字預設音（18,600+ 字）、`poyin_db` 多音字前後文詞彙配對規則（530+ 字）與「一／不」變調邏輯。 |
-| `app_compare.js` | **主頁面控制邏輯**：即時呼叫 `TaiwanZhuyin.textToTokens` 渲染注音，並於背景對 2 字以上詞組查詢教育部萌典 API 進行交叉核對與點擊切換。 |
+| `tw-zhuyin.js` | **核心台灣注音引擎**：封裝 `ButTaiwan/bpmfvs` 教育部審訂單字預設音（18,600+ 字）、完整破音字候選讀音表（3,235 個多音字，`getCharReadings`）、`poyin_db` 多音字前後文詞彙配對規則（530+ 字）與「一／不」變調邏輯。 |
+| `app_compare.js` | **主頁面控制邏輯**：即時呼叫 `TaiwanZhuyin.textToTokens` 渲染注音，支援點擊任何多音字手動循環切換台灣讀音，並於背景對 2 字以上詞組查詢教育部萌典 API 進行交叉核對。 |
 | `render.js` | **共用排版模組 (`ZhuyinRender`)**：負責直式注音符號、右上角聲調、輕聲頂部置中，以及標點符號黏著換行 (`attachPunctuation`)。 |
-| `voice-input.js` | **語音輸入與手機輸入框自適應**：Web Speech API 即時預覽 (`interimResults: true`)、`OpenCC` 簡轉繁單例快取、手機版 1～3 行整數行高動態縮放。 |
+| `voice-input.js` | **語音輸入與手機輸入框自適應**：Web Speech API 即時預覽 (`interimResults: true`)、按需動態載入 (`Lazy Load`) `OpenCC` 簡轉繁單例快取、手機版 1～3 行整數行高動態縮放。 |
 | `copy.js` / `print.js` / `reading.js` | 複製（HTML `<ruby>` 文字與 Canvas PNG 圖片）、A4 純結果列印、全螢幕大字閱讀模式。 |
 | `sw.js` / `pwa.js` / `manifest.webmanifest` | **PWA 與離線快取**：HTML 採用 Network-First、靜態資源採用 Stale-While-Revalidate，支援自動熱更新 (`controllerchange` 自動重整)。 |
+| `test.js` | **零依賴自動化測試與防呆檢查**：驗證台灣教育部讀音黃金語料、多音字候選表、聲調排版、`sw.js` 快取版號一致性與 SRI 資安規範（於 GitHub Actions 自動執行）。 |
 | `fast.html` / `moedict.html` / `compare.html` | 舊版網址相容層（自動重新導向至 `index.html`），請勿刪除以免外部書籤失效。 |
 
 ---
