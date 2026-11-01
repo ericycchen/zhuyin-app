@@ -1,14 +1,30 @@
 /**
- * 注音小幫手 - PWA 註冊與安裝引導模組 (v1.2.0)
+ * 注音小幫手 - PWA 註冊、自動熱更新與安裝引導模組 (v1.2.0)
  */
 document.addEventListener('DOMContentLoaded', () => {
     const installBtn = document.getElementById('install-app-btn');
     const messageEl = document.getElementById('output-message');
 
-    // 1. 註冊 Service Worker 支援離線運作
+    // 1. 註冊 Service Worker 並偵測新版自動重新整理
     if ('serviceWorker' in navigator) {
+        let refreshing = false;
+        // 當新 Service Worker 接管控制權時，自動重新載入頁面套用新版 UI
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+        });
+
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').catch((err) => {
+            navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
+                // 每次開啟或切回前景時主動檢查伺服器是否有新版 sw.js
+                reg.update().catch(() => {});
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') {
+                        reg.update().catch(() => {});
+                    }
+                });
+            }).catch((err) => {
                 console.warn('Service Worker registration failed:', err);
             });
         });
