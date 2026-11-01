@@ -1,0 +1,20 @@
+{
+  "name": "注音小幫手",
+  "short_name": "注音小幫手",
+  "description": "輸入中文，立即轉換為台灣教育部標準注音（支援離線使用、複製文字與圖片、列印及大字閱讀）",
+  "lang": "zh-TW",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e0e7ff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -515,6 +515,46 @@ footer {
     animation: fadeIn 1s ease-out 0.5s both;
 }
 
+.footer-info {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.version-badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--zhuyin-color);
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.install-app-btn {
+    padding: 0.18rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid rgba(79, 70, 229, 0.3);
+    background: white;
+    color: var(--zhuyin-color);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.install-app-btn:hover {
+    background: #eef2ff;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.15);
+}
+
+.install-app-btn[hidden] {
+    display: none;
+}
+
 /* Animations */
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-20px); }
