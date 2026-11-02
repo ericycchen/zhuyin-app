@@ -9,6 +9,9 @@ const path = require('path');
 global.window = global;
 require('./tw-zhuyin.js');
 require('./render.js');
+// voice-input.js 在頁面載入後才綁定 DOM；測試只需要它的純函式
+global.document = global.document || { addEventListener() {} };
+require('./voice-input.js');
 
 let passed = 0;
 
@@ -118,6 +121,39 @@ test('響應式與語音輸入規範：展開鍵盤自適應與語音輸入自�
     assert(!styleCss.includes('max-height: 500px'), 'style.css 的 .output-content 不得限制 max-height: 500px，否則鍵盤收起時結果區無法撐滿全螢幕');
     assert(voiceJs.includes('inputArea.blur()'), 'voice-input.js 啟動語音輸入時應呼叫 inputArea.blur() 收起虛擬鍵盤');
     assert(!voiceJs.includes('inputArea.focus()') || !voiceJs.split('recognition.onstart')[1].includes('inputArea.focus()'), 'recognition.onstart 不得呼叫 inputArea.focus() 喚起鍵盤');
+});
+
+// 7. 語音輸入數字轉國字（讓數字也能標注音）
+test('語音輸入：阿拉伯數字轉國字 (ZhuyinVoice.digitsToChinese)', () => {
+    const cases = [
+        ['3個蘋果', '三個蘋果'],
+        ['2個人', '兩個人'],
+        ['我有2', '我有二'],
+        ['10', '十'],
+        ['15天', '十五天'],
+        ['20', '二十'],
+        ['105', '一百零五'],
+        ['110', '一百一十'],
+        ['1000', '一千'],
+        ['1010', '一千零一十'],
+        ['10010', '一萬零一十'],
+        ['100000', '十萬'],
+        ['120,000元', '十二萬元'],
+        ['100000000', '一億'],
+        ['0', '零'],
+        ['3.14', '三點一四'],
+        ['50%', '百分之五十'],
+        ['2026年', '二〇二六年'],
+        ['0912345678', '〇九一二三四五六七八'],
+        ['３個', '三個'],
+        ['沒有數字', '沒有數字']
+    ];
+    for (const [input, expected] of cases) {
+        assert.strictEqual(window.ZhuyinVoice.digitsToChinese(input), expected, `「${input}」轉換錯誤`);
+    }
+    // 轉換後每個字都要有注音
+    const tokens = window.TaiwanZhuyin.textToTokens(window.ZhuyinVoice.digitsToChinese('2026年有365天'));
+    assert(tokens.every(t => t.zhuyin), '數字轉國字後應全部有注音');
 });
 
 console.log(`\n🎉 全部 ${passed} 項檢查通過！`);
