@@ -156,4 +156,23 @@ test('語音輸入：阿拉伯數字轉國字 (ZhuyinVoice.digitsToChinese)', ()
     assert(tokens.every(t => t.zhuyin), '數字轉國字後應全部有注音');
 });
 
+// 8. 國語生字作業簿列印模組與規範檢查
+test('國語生字作業簿：田字格、注音欄與列印樣式完整性檢查', () => {
+    const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+    const workbookJs = fs.readFileSync(path.join(__dirname, 'workbook.js'), 'utf8');
+
+    assert(indexHtml.includes('id="workbook-btn"'), 'index.html 應包含 workbook-btn 按鈕');
+    assert(indexHtml.includes('id="workbook-modal"'), 'index.html 應包含 workbook-modal 對話框');
+    assert(indexHtml.includes('workbook.js'), 'index.html 應載入 workbook.js 模組');
+
+    assert(styleCss.includes('.workbook-modal'), 'style.css 應包含 .workbook-modal 樣式');
+    assert(styleCss.includes('.wb-grid'), 'style.css 應包含 .wb-grid 田字格樣式');
+    assert(styleCss.includes('.wb-zhuyin-col'), 'style.css 應包含 .wb-zhuyin-col 注音欄樣式');
+    assert(styleCss.includes('body.printing-workbook'), 'style.css @media print 應包含 body.printing-workbook 作業簿列印規則');
+
+    assert(workbookJs.includes('extractCharacters'), 'workbook.js 應包含 extractCharacters 生字過濾函式');
+    assert(workbookJs.includes('renderWorkbookPreview'), 'workbook.js 應包含 renderWorkbookPreview 預覽渲染函式');
+});
+
 console.log(`\n🎉 全部 ${passed} 項檢查通過！`);

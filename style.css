@@ -1261,3 +1261,461 @@ body.compact-viewport:not(.about-page) textarea {
         background: none;
     }
 }
+
+/* ---------- 國語生字作業簿列印對話框與格線樣式 ---------- */
+.workbook-modal {
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    width: 92vw;
+    max-width: 900px;
+    max-height: 90vh;
+    background: #ffffff;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    margin: auto;
+    overflow: hidden;
+}
+
+.workbook-modal::backdrop {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.wb-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 90vh;
+}
+
+.wb-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.wb-modal-header h2 {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin: 0;
+    font-weight: 700;
+}
+
+.wb-close-btn {
+    border: none;
+    background: none;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.wb-close-btn:hover {
+    background: #e2e8f0;
+    color: var(--text-main);
+}
+
+.wb-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.wb-control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+}
+
+.wb-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.wb-text-btn {
+    border: none;
+    background: none;
+    color: var(--zhuyin-color);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+
+.wb-text-btn:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.wb-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 0.6rem;
+    border-radius: 12px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+}
+
+.wb-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wb-chip:hover {
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.wb-chip.is-selected {
+    border-color: var(--primary-color);
+    background: #eef2ff;
+    color: var(--zhuyin-color);
+    font-weight: 600;
+}
+
+.wb-chip-check {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.wb-chip-bopo {
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
+
+.wb-options-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.wb-option-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.wb-option-item select {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.wb-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.wb-preview-header {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.workbook-print-area {
+    background: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.wb-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.wb-tip {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.wb-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0 1.5rem;
+    border-radius: 999px;
+    border: none;
+    background: var(--primary-color);
+    color: #ffffff;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.wb-primary-btn:hover:not(:disabled) {
+    background: var(--zhuyin-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.wb-primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wb-empty-tip {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    background: white;
+    border-radius: 8px;
+}
+
+/* ---------- A4 生字作業簿核心格線 (教育部標準 30:15) ---------- */
+.wb-page {
+    width: 100%;
+    max-width: 210mm;
+    margin: 0 auto 1.5rem;
+    background: #ffffff;
+    padding: 12mm 10mm;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    font-family: 'Noto Sans TC', 'DFKai-SB', 'BiauKai', serif;
+}
+
+.wb-page:last-child {
+    margin-bottom: 0;
+}
+
+.wb-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 2px solid #334155;
+}
+
+.wb-sheet-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: 0.1em;
+}
+
+.wb-student-info {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.88rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+.wb-page-num {
+    color: #64748b;
+    font-size: 0.82rem;
+}
+
+.wb-rows-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5mm;
+}
+
+.wb-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2mm;
+}
+
+/* 單一練習單元格：田字格 + 注音欄 */
+.wb-cell {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    max-width: 28mm;
+    box-sizing: border-box;
+}
+
+/* 國字田字格 (1:1 正方形) */
+.wb-grid {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    flex: 1;
+    border: 1.5px solid #334155;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cline x1='50' y1='0' x2='50' y2='100' stroke='%23cbd5e1' stroke-width='1.2' stroke-dasharray='4,4'/%3E%3Cline x1='0' y1='50' x2='100' y2='50' stroke='%23cbd5e1' stroke-width='1.2' stroke-dasharray='4,4'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.wb-char {
+    font-size: 1.55rem;
+    font-family: 'DFKai-SB', 'BiauKai', 'Noto Sans TC', serif;
+    line-height: 1;
+    user-select: none;
+}
+
+.wb-model-text {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.wb-trace-text {
+    color: #94a3b8 !important;
+    font-weight: 500;
+}
+
+/* 注音欄 (教育部標準：國字寬度的 40%~50%) */
+.wb-zhuyin-col {
+    position: relative;
+    width: 8.5mm;
+    border: 1.5px solid #334155;
+    border-left: none;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cline x1='0' y1='33.3' x2='100' y2='33.3' stroke='%23e2e8f0' stroke-width='1' stroke-dasharray='3,3'/%3E%3Cline x1='0' y1='66.6' x2='100' y2='66.6' stroke='%23e2e8f0' stroke-width='1' stroke-dasharray='3,3'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 0.72rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    color: #0f172a;
+    font-weight: 600;
+    user-select: none;
+}
+
+.wb-zhuyin-col.wb-trace-text {
+    color: #94a3b8;
+}
+
+.wb-zhuyin-col .bopo-chars {
+    letter-spacing: -1px;
+}
+
+.wb-zhuyin-col .bopo-tone.tone-mark {
+    right: -0.65em;
+    font-size: 0.9em;
+}
+
+.wb-zhuyin-col.wb-zhuyin-blank {
+    background-color: #ffffff;
+}
+
+/* ---------- 作業簿列印專用樣式 (@media print) ---------- */
+@media print {
+    body.printing-workbook {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    body.printing-workbook .app-container,
+    body.printing-workbook .wb-modal-header,
+    body.printing-workbook .wb-control-group,
+    body.printing-workbook .wb-options-row,
+    body.printing-workbook .wb-preview-header,
+    body.printing-workbook .wb-modal-footer {
+        display: none !important;
+    }
+
+    body.printing-workbook .workbook-modal {
+        position: static !important;
+        inset: auto !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        height: auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    body.printing-workbook .wb-modal-content,
+    body.printing-workbook .wb-modal-body,
+    body.printing-workbook .wb-preview-wrapper,
+    body.printing-workbook .workbook-print-area {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        border: none !important;
+        border-radius: 0 !important;
+        display: block !important;
+    }
+
+    body.printing-workbook .wb-page {
+        margin: 0 0 0 0 !important;
+        padding: 10mm !important;
+        box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    body.printing-workbook .wb-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    body.printing-workbook .wb-grid,
+    body.printing-workbook .wb-zhuyin-col {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
