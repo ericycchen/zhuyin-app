@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=39">
+    <link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
     <div class="app-container">
@@ -126,19 +126,35 @@
                 </div>
                 <div class="wb-options-row">
                     <div class="wb-option-item">
+                        <label for="wb-layout-direction">版面方向：</label>
+                        <select id="wb-layout-direction">
+                            <option value="vertical" selected>直式直行（教育部標準，右至左）</option>
+                            <option value="horizontal">橫式橫行（左至右）</option>
+                        </select>
+                    </div>
+                    <div class="wb-option-item">
+                        <label for="wb-cols-per-page">每頁欄數：</label>
+                        <select id="wb-cols-per-page">
+                            <option value="7" selected>7 欄（教育部作業簿標準）</option>
+                            <option value="6">6 欄（大字寬敞，低年級首選）</option>
+                            <option value="8">8 欄（緊湊，容納更多字）</option>
+                        </select>
+                    </div>
+                    <div class="wb-option-item">
+                        <label for="wb-cells-count">每欄格數：</label>
+                        <select id="wb-cells-count">
+                            <option value="10" selected>10 格（標準生字簿規格）</option>
+                            <option value="8">8 格（低負擔）</option>
+                            <option value="12">12 格（多寫練習）</option>
+                        </select>
+                    </div>
+                    <div class="wb-option-item">
                         <label for="wb-trace-count">描紅格數：</label>
                         <select id="wb-trace-count">
                             <option value="2" selected>2 格（建議，適合初學）</option>
                             <option value="1">1 格</option>
-                            <option value="0">0 格（全空白練習）</option>
-                        </select>
-                    </div>
-                    <div class="wb-option-item">
-                        <label for="wb-cells-per-row">每行格數：</label>
-                        <select id="wb-cells-per-row">
-                            <option value="7" selected>7 格（標準 A4）</option>
-                            <option value="6">6 格（大格）</option>
-                            <option value="8">8 格（緊湊）</option>
+                            <option value="3">3 格</option>
+                            <option value="0">0 格（全空白自練）</option>
                         </select>
                     </div>
                 </div>
@@ -169,7 +185,7 @@
     <script src="print.js?v=1"></script>
     <script src="copy.js?v=1"></script>
     <script src="reading.js?v=1"></script>
-    <script src="workbook.js?v=1"></script>
+    <script src="workbook.js?v=2"></script>
     <script src="pwa.js?v=3"></script>
     <script>
         if (window.visualViewport) {
