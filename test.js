@@ -175,4 +175,11 @@ test('國語生字作業簿：田字格、注音欄與列印樣式完整性檢�
     assert(workbookJs.includes('renderWorkbookPreview'), 'workbook.js 應包含 renderWorkbookPreview 預覽渲染函式');
 });
 
+// 9. 聲調與相鄰國字防碰撞檢查
+test('注音排版防碰撞：.bopo-container 應內建聲調安全寬度，防止調號向外溢出碰撞相鄰國字', () => {
+    const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+    assert(styleCss.includes('.bopo-container') && styleCss.includes('padding-right: 0.55em'), 'style.css .bopo-container 應設定 padding-right: 0.55em 預留聲調寬度');
+    assert(styleCss.includes('.bopo-tone.tone-mark') && styleCss.includes('right: 0;'), '.bopo-tone.tone-mark 應貼齊聲調欄右緣 right: 0，不得向容器外溢出負值');
+});
+
 console.log(`\n🎉 全部 ${passed} 項檢查通過！`);

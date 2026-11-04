@@ -227,7 +227,7 @@ textarea:focus {
 .zhuyin-word {
     display: inline-flex;
     align-items: center;
-    margin-right: 0.35em; /* Use em so margin scales with font size */
+    margin-right: 0.3em; /* Use em so margin scales with font size */
     vertical-align: bottom;
 }
 
@@ -242,7 +242,7 @@ textarea:focus {
 
 /* 接在注音後面的標點：留出右上角聲調的空間 */
 .zhuyin-bopomofo + .zhuyin-punct {
-    margin-left: 0.3em;
+    margin-left: 0.15em;
 }
 
 .zhuyin-bopomofo {
@@ -261,6 +261,7 @@ textarea:focus {
     flex-direction: column;
     align-items: center;
     line-height: 1.1;
+    padding-right: 0.55em; /* 預留右上角聲調專屬寬度，防止飄出容器碰撞相鄰國字 */
 }
 
 .bopo-chars {
@@ -276,7 +277,7 @@ textarea:focus {
 
 .bopo-tone.tone-mark {
     position: absolute;
-    right: -0.7em; /* 二、三、四聲標於注音右上角外緣（教育部規格，見 docs/zhuyin-guide.md） */
+    right: 0; /* 貼齊預留之聲調欄右緣（教育部規格，見 docs/zhuyin-guide.md） */
     top: 0;
     writing-mode: horizontal-tb;
     font-size: 1em; /* Align font size */
@@ -1080,11 +1081,11 @@ body.compact-viewport:not(.about-page) textarea {
     }
 
     .zhuyin-word {
-        margin-right: 0.18em;
+        margin-right: 0.22em;
     }
 
     .zhuyin-bopomofo + .zhuyin-punct {
-        margin-left: 0.15em;
+        margin-left: 0.1em;
     }
 
     .output-header {
