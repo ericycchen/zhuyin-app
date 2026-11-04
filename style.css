@@ -227,7 +227,7 @@ textarea:focus {
 .zhuyin-word {
     display: inline-flex;
     align-items: center;
-    margin-right: 0.6em; /* Use em so margin scales with font size */
+    margin-right: 0.35em; /* Use em so margin scales with font size */
     vertical-align: bottom;
 }
 
@@ -1076,6 +1076,15 @@ body.compact-viewport:not(.about-page) textarea {
         background: transparent;
         border: none;
         border-radius: 0;
+        line-height: 1.65;
+    }
+
+    .zhuyin-word {
+        margin-right: 0.18em;
+    }
+
+    .zhuyin-bopomofo + .zhuyin-punct {
+        margin-left: 0.15em;
     }
 
     .output-header {
