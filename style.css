@@ -938,11 +938,15 @@ body.compact-viewport:not(.about-page) textarea {
 @media (max-width: 768px) {
     body {
         align-items: flex-start;
-        padding: 0.5rem;
+        padding: 0.35rem 0.4rem;
+        height: 100dvh;
+        box-sizing: border-box;
     }
 
     .app-container {
-        gap: 0.4rem;
+        gap: 0.3rem;
+        height: 100%;
+        max-height: 100%;
         /* Height will be strictly controlled by JS visualViewport on mobile */
     }
 
@@ -983,13 +987,13 @@ body.compact-viewport:not(.about-page) textarea {
     .main-content {
         display: flex;
         flex-direction: column-reverse;
-        gap: 0.5rem;
+        gap: 0.35rem;
         flex: 1;
         min-height: 0;
     }
     
     .glass-panel {
-        padding: 0.6rem;
+        padding: 0.45rem 0.55rem;
     }
 
     /* 輸入區高度由 JS 依內容調整（1 到 3 行） */
@@ -1068,26 +1072,29 @@ body.compact-viewport:not(.about-page) textarea {
 
     .output-content {
         font-size: 1.1rem;
-        padding: 0.5rem;
+        padding: 0.2rem 0.25rem;
+        background: transparent;
+        border: none;
+        border-radius: 0;
     }
 
     .output-header {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
     .output-title {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .output-tools {
-        gap: 0.4rem;
+        gap: 0.35rem;
     }
 
     .font-size-control {
-        gap: 0.3rem;
+        gap: 0.25rem;
     }
 
     .font-size-control input[type="range"] {
@@ -1102,8 +1109,9 @@ body.compact-viewport:not(.about-page) textarea {
     }
 
     .output-message {
-        font-size: 0.8rem;
-        margin: -0.2rem 0 0.4rem;
+        font-size: 0.78rem;
+        margin: -0.1rem 0 0.25rem;
+        padding: 0.25rem 0.5rem;
     }
 
     /* 手機只顯示圖示，觸控範圍延伸到 44px */
@@ -1122,8 +1130,14 @@ body.compact-viewport:not(.about-page) textarea {
     }
 
     .diff-legend {
-        font-size: 0.8rem;
-        margin: -0.2rem 0 0.4rem;
+        font-size: 0.78rem;
+        margin: -0.1rem 0 0.25rem;
+        line-height: 1.35;
+        padding: 0.15rem 0.45rem;
+        background: rgba(99, 102, 241, 0.08);
+        border-radius: 6px;
+        display: inline-block;
+        width: fit-content;
     }
 
     /* Mobile overrides for voice input button */

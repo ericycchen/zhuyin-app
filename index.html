@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- 引入自訂樣式 -->
-    <link rel="stylesheet" href="style.css?v=35">
+    <link rel="stylesheet" href="style.css?v=36">
 </head>
 <body>
     <div class="app-container">
@@ -107,7 +107,7 @@
     <script src="tw-zhuyin.js?v=2"></script>
     <!-- 引入應用程式邏輯 -->
     <script src="render.js?v=1"></script>
-    <script src="app_compare.js?v=24"></script>
+    <script src="app_compare.js?v=25"></script>
     <!-- 引入語音輸入邏輯 (內建按需載入 OpenCC 簡轉繁 + SRI 驗證) -->
     <script src="voice-input.js?v=7"></script>
     <script src="print.js?v=1"></script>
@@ -126,7 +126,7 @@
                     document.body.style.minHeight = '0';
                     document.body.style.overflow = 'hidden';
                     const container = document.querySelector('.app-container');
-                    if (container) container.style.height = (vvh - (isMobile ? 16 : 20)) + 'px';
+                    if (container) container.style.height = (vvh - (isMobile ? 12 : 20)) + 'px';
                     if (window.scrollY !== 0 || window.visualViewport.offsetTop !== 0) {
                         window.scrollTo(0, 0);
                     }
