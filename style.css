@@ -1659,10 +1659,12 @@ body.compact-viewport:not(.about-page) textarea {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    container-type: inline-size;
 }
 
 .wb-char {
-    font-size: clamp(1.2rem, 3.8vw, 1.85rem);
+    font-size: 2.2rem;
+    font-size: 78cqw;
     font-family: 'DFKai-SB', 'BiauKai', 'Kaiti TC', serif;
     line-height: 1;
     user-select: none;
@@ -1690,6 +1692,7 @@ body.compact-viewport:not(.about-page) textarea {
     align-items: stretch;
     box-sizing: border-box;
     user-select: none;
+    container-type: inline-size;
 }
 
 .wb-zhuyin-col.wb-trace-text {
@@ -1718,7 +1721,8 @@ body.compact-viewport:not(.about-page) textarea {
 }
 
 .wb-bopo-count-1 .wb-bopo-sym {
-    font-size: clamp(0.72rem, 1.9vw, 1.15rem);
+    font-size: 1.15rem;
+    font-size: 50cqw;
     line-height: 1;
 }
 
@@ -1734,7 +1738,8 @@ body.compact-viewport:not(.about-page) textarea {
 }
 
 .wb-bopo-count-2 .wb-bopo-sym {
-    font-size: clamp(0.66rem, 1.75vw, 1.05rem);
+    font-size: 1.05rem;
+    font-size: 46cqw;
     line-height: 1;
 }
 
@@ -1750,7 +1755,8 @@ body.compact-viewport:not(.about-page) textarea {
 }
 
 .wb-bopo-count-3 .wb-bopo-sym {
-    font-size: clamp(0.58rem, 1.5vw, 0.92rem);
+    font-size: 0.92rem;
+    font-size: 40cqw;
     line-height: 1;
 }
 
@@ -1774,7 +1780,8 @@ body.compact-viewport:not(.about-page) textarea {
     width: 40%;
     display: flex;
     justify-content: center;
-    font-size: clamp(0.6rem, 1.5vw, 0.95rem);
+    font-size: 0.95rem;
+    font-size: 38cqw;
 }
 
 /* 1個符號時：調號對齊單符號右上側（高度約 36% 處，符合教育部規範） */
@@ -1797,7 +1804,8 @@ body.compact-viewport:not(.about-page) textarea {
     top: 2%;
     left: 30%;
     transform: translateX(-50%);
-    font-size: clamp(0.65rem, 1.5vw, 0.95rem);
+    font-size: 0.95rem;
+    font-size: 38cqw;
 }
 
 .wb-zhuyin-col.wb-zhuyin-blank {
