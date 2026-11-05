@@ -1677,16 +1677,17 @@ body.compact-viewport:not(.about-page) textarea {
     color: #94a3b8 !important;
 }
 
-/* 注音欄：教育部標準寬度為國字一半 (15:30 比例)，內含三等分格線 */
+/* 注音欄：教育部標準寬度為國字一半 (15:30 比例，長寬 1:2) */
 .wb-zhuyin-col {
     position: relative;
     aspect-ratio: 1 / 2;
     flex: 1;
     background-color: #ffffff;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cline x1='0' y1='33.3' x2='100' y2='33.3' stroke='%23cbd5e1' stroke-width='1' stroke-dasharray='3,3'/%3E%3Cline x1='0' y1='66.6' x2='100' y2='66.6' stroke='%23cbd5e1' stroke-width='1' stroke-dasharray='3,3'/%3E%3C/svg%3E");
+    /* 垂直虛線分割線：左 60% 符號書寫區，右 40% 聲調標注區（教育部直式體式） */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cline x1='60' y1='0' x2='60' y2='100' stroke='%23e2e8f0' stroke-width='1.2' stroke-dasharray='3,3'/%3E%3C/svg%3E");
     background-size: 100% 100%;
     display: flex;
-    flex-direction: column;
+    align-items: stretch;
     box-sizing: border-box;
     user-select: none;
 }
@@ -1695,17 +1696,62 @@ body.compact-viewport:not(.about-page) textarea {
     color: #94a3b8;
 }
 
-.wb-bopo-slot {
-    flex: 1;
+/* 注音符號直排區（佔注音欄左側 60% 寬度） */
+.wb-bopo-symbols-col {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60%;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: relative;
     box-sizing: border-box;
     font-family: 'DFKai-SB', 'BiauKai', 'Noto Sans TC', sans-serif;
-    font-size: clamp(0.6rem, 1.6vw, 0.95rem);
-    line-height: 1;
+    color: inherit;
     font-weight: 600;
+}
+
+/* 單符號：垂直置中（教育部手冊規範 Y: 10.5~19.5） */
+.wb-bopo-count-1 .wb-bopo-symbols-col {
+    justify-content: center;
+}
+
+.wb-bopo-count-1 .wb-bopo-sym {
+    font-size: clamp(0.72rem, 1.9vw, 1.15rem);
+    line-height: 1;
+}
+
+/* 雙符號：二符號自然相連均勻排列（教育部手冊規範 聲母在上、韻母在下，中間小間距） */
+.wb-bopo-count-2 .wb-bopo-symbols-col {
+    justify-content: center;
+    gap: 6%;
+}
+
+.wb-bopo-count-2.has-light-tone .wb-bopo-symbols-col {
+    padding-top: 10%;
+    padding-bottom: 2%;
+}
+
+.wb-bopo-count-2 .wb-bopo-sym {
+    font-size: clamp(0.66rem, 1.75vw, 1.05rem);
+    line-height: 1;
+}
+
+/* 三符號：三符號等距緊湊直排（教育部手冊規範 聲母、介母、韻母） */
+.wb-bopo-count-3 .wb-bopo-symbols-col {
+    justify-content: center;
+    gap: 2%;
+    padding: 2% 0;
+}
+
+.wb-bopo-count-3.has-light-tone .wb-bopo-symbols-col {
+    padding-top: 10%;
+}
+
+.wb-bopo-count-3 .wb-bopo-sym {
+    font-size: clamp(0.58rem, 1.5vw, 0.92rem);
+    line-height: 1;
 }
 
 .wb-bopo-sym {
@@ -1713,25 +1759,45 @@ body.compact-viewport:not(.about-page) textarea {
     line-height: 1;
 }
 
-/* 二、三、四聲錨定於所屬格右上角，維持在注音欄內不碰撞外緣 */
-.wb-bopo-tone-mark {
+/* 聲調符號區：依教育部手冊精確幾何錨定 */
+.wb-bopo-tone {
     position: absolute;
-    right: 6%;
-    top: 8%;
-    font-size: clamp(0.55rem, 1.3vw, 0.85rem);
-    line-height: 1;
+    font-family: 'DFKai-SB', 'BiauKai', 'Noto Sans TC', sans-serif;
     font-weight: 700;
+    line-height: 1;
+    color: inherit;
 }
 
-/* 輕聲置於注音欄頂端正中央 */
-.wb-bopo-tone-light {
-    position: absolute;
-    top: 2px;
-    left: 50%;
+/* 二、三、四聲調號：位於右側 40% 聲調列中央，垂直對齊所屬符號右上緣 */
+.wb-bopo-tone.wb-tone-mark {
+    left: 60%;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    font-size: clamp(0.6rem, 1.5vw, 0.95rem);
+}
+
+/* 1個符號時：調號對齊單符號右上側（高度約 36% 處，符合教育部規範） */
+.wb-tone-pos-1 {
+    top: 36%;
+}
+
+/* 2個符號時：調號對齊第 2 個符號右上側（高度約 50% 處，符合教育部規範） */
+.wb-tone-pos-2 {
+    top: 50%;
+}
+
+/* 3個符號時：調號對齊第 3 個符號右上側（高度約 64% 處，符合教育部規範） */
+.wb-tone-pos-3 {
+    top: 64%;
+}
+
+/* 輕聲（˙）：教育部手冊規定置於第一個符號正上方中央 */
+.wb-bopo-tone.wb-tone-light {
+    top: 2%;
+    left: 30%;
     transform: translateX(-50%);
-    font-size: clamp(0.6rem, 1.4vw, 0.85rem);
-    line-height: 1;
-    font-weight: 700;
+    font-size: clamp(0.65rem, 1.5vw, 0.95rem);
 }
 
 .wb-zhuyin-col.wb-zhuyin-blank {

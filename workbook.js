@@ -8,68 +8,6 @@
 (function () {
     const HAN_REGEX = /[\u4e00-\u9fa5]/;
 
-    // 台灣教育部注音符號分類
-    const INITIALS = new Set('ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙ'.split(''));
-    const MEDIALS = new Set('ㄧㄨㄩ'.split(''));
-    const RHYMES = new Set('ㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ'.split(''));
-
-    /**
-     * 將注音符號拆解為教育部三等分位置：[聲母, 介母, 韻母] 與聲調
-     * @param {string} chars 注音符號（如「ㄊㄧㄢ」、「ㄏㄠ」、「ㄚ」、「ㄓ」）
-     * @param {string} tone 聲調（''、'ˊ'、'ˇ'、'ˋ'、'˙'）
-     * @returns {{ slots: string[], tone: string, toneSlotIdx: number }}
-     */
-    function parseBopoSlots(chars, tone) {
-        let cleanTone = tone || '';
-        let cleanChars = chars || '';
-
-        // 若 chars 尾端或前端含聲調，先分離
-        if (window.ZhuyinRender && window.ZhuyinRender.splitTone) {
-            const split = window.ZhuyinRender.splitTone(cleanChars);
-            cleanChars = split.chars;
-            if (!cleanTone && split.tone) {
-                cleanTone = split.tone;
-            }
-        }
-
-        const symbols = Array.from(cleanChars);
-        const slots = ['', '', '']; // 0: 上 (聲母), 1: 中 (介母/單符號), 2: 下 (韻母)
-        let toneSlotIdx = 2; // 預設調號附著於最下格
-
-        if (symbols.length === 3) {
-            // 三拼：聲 + 介 + 韻 (例如：ㄒ ㄧ ㄢ)
-            slots[0] = symbols[0];
-            slots[1] = symbols[1];
-            slots[2] = symbols[2];
-            toneSlotIdx = 2;
-        } else if (symbols.length === 2) {
-            if (INITIALS.has(symbols[0])) {
-                // 聲 + 韻/介 (例如：ㄏ ㄠ、ㄉ ㄚ、ㄋ ㄧ)
-                // 依小學作業簿規格：聲母在上格，韻母在下格
-                slots[0] = symbols[0];
-                slots[1] = '';
-                slots[2] = symbols[1];
-                toneSlotIdx = 2;
-            } else {
-                // 介 + 韻 (例如：ㄧ ㄠ、ㄨ ㄢ、ㄩ ㄝ)
-                // 介母在中格，韻母在下格
-                slots[0] = '';
-                slots[1] = symbols[0];
-                slots[2] = symbols[1];
-                toneSlotIdx = 2;
-            }
-        } else if (symbols.length === 1) {
-            // 單符號 (例如：ㄚ、ㄧ、ㄨ、ㄓ、ㄦ)
-            // 置於注音欄中央
-            slots[0] = '';
-            slots[1] = symbols[0];
-            slots[2] = '';
-            toneSlotIdx = 1;
-        }
-
-        return { slots, tone: cleanTone, toneSlotIdx };
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
         const workbookBtn = document.getElementById('workbook-btn');
         const modal = document.getElementById('workbook-modal');
@@ -175,43 +113,47 @@
         }
 
         /**
-         * 產生教育部標準三等分注音欄 HTML
+         * 產生教育部標準直式注音欄 HTML
+         * 依據教育部《國語注音符號手冊》直式注音幾何體式：
+         * - 左側 60% (9/15) 為注音符號直排區
+         * - 右側 40% (6/15) 為聲調符號區
+         * - 二、三、四聲錨定於最後一個符號右上側（單符號約 36%、雙符號約 50%、三符號約 64%）
+         * - 輕聲（˙）標於首個符號正上方中央
          */
         function generateBopoColHtml(chars, tone, isTrace, isBlank) {
             if (isBlank || !chars) {
-                return `
-                    <div class="wb-zhuyin-col wb-zhuyin-blank">
-                        <div class="wb-bopo-slot"></div>
-                        <div class="wb-bopo-slot"></div>
-                        <div class="wb-bopo-slot"></div>
-                    </div>
-                `;
+                return '<div class="wb-zhuyin-col wb-zhuyin-blank"></div>';
             }
 
-            const { slots, tone: parsedTone, toneSlotIdx } = parseBopoSlots(chars, tone);
-            const isLightTone = parsedTone === '˙';
-
-            let slotsHtml = '';
-            for (let i = 0; i < 3; i++) {
-                const sym = slots[i];
-                let slotInner = '';
-                if (sym) {
-                    slotInner += `<span class="wb-bopo-sym">${sym}</span>`;
+            let cleanChars = chars || '';
+            let cleanTone = tone || '';
+            if (window.ZhuyinRender && window.ZhuyinRender.splitTone) {
+                const split = window.ZhuyinRender.splitTone(cleanChars);
+                cleanChars = split.chars;
+                if (!cleanTone && split.tone) {
+                    cleanTone = split.tone;
                 }
-                // 二、三、四聲錨定在最後一個符號所在格的右上角
-                if (!isLightTone && parsedTone && i === toneSlotIdx) {
-                    slotInner += `<span class="wb-bopo-tone-mark">${parsedTone}</span>`;
-                }
-                slotsHtml += `<div class="wb-bopo-slot">${slotInner}</div>`;
             }
 
-            // 輕聲置頂
-            const lightToneHtml = isLightTone ? '<span class="wb-bopo-tone-light">˙</span>' : '';
+            const symbols = Array.from(cleanChars);
+            const count = Math.min(3, Math.max(1, symbols.length));
+            const isLight = cleanTone === '˙';
+
+            const symsHtml = symbols.map(s => `<span class="wb-bopo-sym">${s}</span>`).join('');
+
+            let toneHtml = '';
+            if (isLight) {
+                toneHtml = '<span class="wb-bopo-tone wb-tone-light">˙</span>';
+            } else if (cleanTone) {
+                toneHtml = `<span class="wb-bopo-tone wb-tone-mark wb-tone-pos-${count}">${cleanTone}</span>`;
+            }
 
             return `
-                <div class="wb-zhuyin-col ${isTrace ? 'wb-trace-text' : ''}">
-                    ${lightToneHtml}
-                    ${slotsHtml}
+                <div class="wb-zhuyin-col wb-bopo-count-${count} ${isLight ? 'has-light-tone' : ''} ${isTrace ? 'wb-trace-text' : ''}">
+                    <div class="wb-bopo-symbols-col">
+                        ${symsHtml}
+                    </div>
+                    ${toneHtml}
                 </div>
             `;
         }
