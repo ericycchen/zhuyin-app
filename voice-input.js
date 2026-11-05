@@ -2,6 +2,83 @@
  * 注音小幫手 - 語音輸入模組 (Voice Input Module)
  * 使用 Web Speech API 進行即時中文語音辨識
  */
+/**
+ * 把語音辨識結果中的阿拉伯數字轉成國字，讓數字也能標上注音。
+ * 例如「3個」→「三個」、「2個」→「兩個」、「105」→「一百零五」、「3.5」→「三點五」、
+ * 「50%」→「百分之五十」、「2026年」→「二〇二六年」、「0912」→「〇九一二」。
+ * 只用於語音輸入；使用者自己打的數字不會被改動。
+ */
+(function () {
+    const DIGITS = '零一二三四五六七八九';
+    const SMALL_UNITS = ['', '十', '百', '千'];
+    const BIG_UNITS = ['', '萬', '億', '兆'];
+    // 「2」後面接這些量詞時唸「兩」
+    const LIANG_CLASSIFIERS = '個隻本張位次條件塊杯天週歲台輛種頁把雙對句碗瓶顆片根間份家餐';
+
+    function readDigitByDigit(str) {
+        return Array.from(str, (d) => (d === '0' ? '〇' : DIGITS[+d])).join('');
+    }
+
+    // 0～9999
+    function readGroup(n) {
+        let out = '';
+        let pendingZero = false;
+        for (let pos = 3; pos >= 0; pos--) {
+            const d = Math.floor(n / 10 ** pos) % 10;
+            if (d === 0) {
+                if (out) pendingZero = true;
+                continue;
+            }
+            if (pendingZero) { out += '零'; pendingZero = false; }
+            out += DIGITS[d] + SMALL_UNITS[pos];
+        }
+        return out;
+    }
+
+    function readInteger(str) {
+        const s = str.replace(/^0+(?=\d)/, '');
+        if (s === '0') return '零';
+        if (s.length > 16) return readDigitByDigit(s);
+        const groups = [];
+        for (let end = s.length; end > 0; end -= 4) {
+            groups.unshift(parseInt(s.slice(Math.max(0, end - 4), end), 10));
+        }
+        let out = '';
+        let needZero = false;
+        groups.forEach((g, i) => {
+            const unit = BIG_UNITS[groups.length - 1 - i];
+            if (g === 0) { if (out) needZero = true; return; }
+            if (out && (needZero || g < 1000)) out += '零';
+            needZero = false;
+            out += readGroup(g) + unit;
+        });
+        // 「一十」開頭時口語唸「十」，例如 10 → 十、15 → 十五、100000 → 十萬
+        return out.replace(/^一十/, '十');
+    }
+
+    function digitsToChinese(text) {
+        if (!text) return text;
+        const half = text
+            .replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+            .replace(/[．]/g, '.')
+            .replace(/(\d),(?=\d{3}(?!\d))/g, '$1'); // 去掉千分位逗號
+        return half.replace(/(\d+)(?:\.(\d+))?([%％])?/g, (match, intPart, decPart, percent, offset, whole) => {
+            const next = whole.charAt(offset + match.length);
+            // 年份、電話、以 0 開頭的編號：逐字唸
+            if (!decPart && !percent && ((intPart.length === 4 && next === '年') || (intPart.length > 1 && intPart[0] === '0'))) {
+                return readDigitByDigit(intPart);
+            }
+            let out = (intPart === '2' && !decPart && !percent && next && LIANG_CLASSIFIERS.includes(next))
+                ? '兩'
+                : readInteger(intPart);
+            if (decPart) out += '點' + Array.from(decPart, (d) => DIGITS[+d]).join('');
+            return percent ? '百分之' + out : out;
+        });
+    }
+
+    window.ZhuyinVoice = { digitsToChinese };
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     const inputArea = document.getElementById('chinese-input');
     const voiceBtn = document.getElementById('voice-input-btn');
@@ -167,8 +244,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 啟動錄音
     function startRecording() {
         ensureOpenCCLoaded();
+        // 先於收起鍵盤前錄下目前游標選取範圍，隨即解除輸入框焦點以收起手機虛擬鍵盤
+        insertStartPos = typeof inputArea.selectionStart === 'number' ? inputArea.selectionStart : inputArea.value.length;
+        const insertEndPos = typeof inputArea.selectionEnd === 'number' ? inputArea.selectionEnd : inputArea.value.length;
+        textBeforeInsert = inputArea.value.substring(0, insertStartPos);
+        textAfterInsert = inputArea.value.substring(insertEndPos);
+        inputArea.blur();
         try {
             recognition.start();
+            // 在 onstart 觸發前就標記為錄音中，讓使用者快速再點一下也能取消
+            isRecording = true;
         } catch (e) {
             console.error('Speech recognition start failed:', e);
             cleanup();
@@ -205,14 +290,10 @@ document.addEventListener('DOMContentLoaded', () => {
         inputArea.placeholder = '🔊 正在聆聽中，請說話...';
         inputArea.classList.add('voice-active');
 
-        // 記錄啟動錄音時的游標區間與上下文，供即時預覽與最終結果覆寫使用
-        insertStartPos = typeof inputArea.selectionStart === 'number' ? inputArea.selectionStart : inputArea.value.length;
-        const insertEndPos = typeof inputArea.selectionEnd === 'number' ? inputArea.selectionEnd : inputArea.value.length;
-        textBeforeInsert = inputArea.value.substring(0, insertStartPos);
-        textAfterInsert = inputArea.value.substring(insertEndPos);
-        
-        // 自動聚焦輸入框
-        inputArea.focus();
+        // 保持收起虛擬鍵盤，讓上方注音結果區展開至最大可視空間
+        if (document.activeElement === inputArea) {
+            inputArea.blur();
+        }
     };
     
     // 取得語音辨識結果（含即時預覽與最終結果）
@@ -223,19 +304,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (transcript) {
-            const convertedText = toTraditionalTW(transcript);
+            const convertedText = window.ZhuyinVoice.digitsToChinese(toTraditionalTW(transcript));
             const newVal = textBeforeInsert + convertedText + textAfterInsert;
             inputArea.value = newVal;
             
-            // 更新游標位置至新插入文字的後方
+            // 僅在輸入框已聚焦時更新游標，避免在手機語音輸入途中重新喚起虛擬鍵盤
             const newCursorPos = insertStartPos + convertedText.length;
-            inputArea.setSelectionRange(newCursorPos, newCursorPos);
+            if (document.activeElement === inputArea) {
+                inputArea.setSelectionRange(newCursorPos, newCursorPos);
+            }
             
             // 儲存至 localStorage 以供跨頁面或重新整理時讀取
             localStorage.setItem('zhuyin_input_text', newVal);
             
             // 自動觸發 input 事件，以便網頁中其他的轉換邏輯（app.js/app_moe.js/app_compare.js）即時進行注音轉換
             inputArea.dispatchEvent(new Event('input'));
+            inputArea.scrollTop = inputArea.scrollHeight;
         }
     };
     
@@ -249,8 +333,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage('目前瀏覽器環境不允許啟用語音辨識服務，請改用 Chrome 或 Safari 開啟。');
         } else if (event.error === 'audio-capture') {
             showMessage('找不到麥克風裝置，請確認麥克風已連接且未被其他程式佔用。');
-        } else if (event.error === 'no-speech' || event.error === 'aborted') {
-            // 靜默處理無語音或主動中止狀態
+        } else if (event.error === 'no-speech') {
+            showMessage('沒有聽到聲音，請靠近麥克風再試一次。');
+        } else if (event.error === 'aborted') {
+            // 使用者主動取消或切換分頁，不需提示
         } else if (event.error === 'network') {
             showMessage('語音辨識需要網路，請檢查連線後再試一次。');
         } else {

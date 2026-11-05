@@ -259,10 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const diffCount = outputArea.querySelectorAll('.diff-container').length;
         const polyCount = outputArea.querySelectorAll('.polyphonic-word').length;
         if (diffCount > 0) {
-            legend.innerHTML = `有 ${diffCount} 個字與萌典詞組讀音不同，以<span class="diff-sample">橘色底線</span>標示。點一下任何多音字即可切換讀音。`;
+            legend.innerHTML = `有 ${diffCount} 字與萌典不同（<span class="diff-sample">橘底線</span>），點擊可切換讀音`;
             legend.hidden = false;
         } else if (polyCount > 0) {
-            legend.innerHTML = `💡 提示：點擊結果區中的多音字（底線標示），即可手動切換該字的其他台灣教育部審訂讀音。`;
+            legend.innerHTML = `💡 點擊底線多音字可切換讀音`;
             legend.hidden = false;
         } else {
             legend.hidden = true;

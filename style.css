@@ -23,6 +23,7 @@ body {
     font-family: 'Noto Sans TC', sans-serif;
     background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
+    min-height: 100dvh;
     color: var(--text-main);
     display: flex;
     justify-content: center;
@@ -187,13 +188,13 @@ textarea {
     background: rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
     outline: none;
+    overscroll-behavior: contain;
 }
 
 .output-content {
     flex: 1;
     width: 100%;
-    min-height: 200px;
-    max-height: 500px;
+    min-height: 0;
     padding: 1rem;
     font-size: 28px; /* Default font size, overridden by JS */
     line-height: 2.2;
@@ -201,6 +202,7 @@ textarea {
     border-radius: 12px;
     border: 1px solid rgba(0,0,0,0.05);
     overflow-y: auto;
+    overscroll-behavior: contain;
     display: block; /* Use block layout so line-height strictly aligns with textarea */
 }
 
@@ -225,7 +227,7 @@ textarea:focus {
 .zhuyin-word {
     display: inline-flex;
     align-items: center;
-    margin-right: 0.6em; /* Use em so margin scales with font size */
+    margin-right: 0.3em; /* Use em so margin scales with font size */
     vertical-align: bottom;
 }
 
@@ -240,7 +242,7 @@ textarea:focus {
 
 /* 接在注音後面的標點：留出右上角聲調的空間 */
 .zhuyin-bopomofo + .zhuyin-punct {
-    margin-left: 0.3em;
+    margin-left: 0.15em;
 }
 
 .zhuyin-bopomofo {
@@ -259,6 +261,7 @@ textarea:focus {
     flex-direction: column;
     align-items: center;
     line-height: 1.1;
+    padding-right: 0.55em; /* 預留右上角聲調專屬寬度，防止飄出容器碰撞相鄰國字 */
 }
 
 .bopo-chars {
@@ -274,7 +277,7 @@ textarea:focus {
 
 .bopo-tone.tone-mark {
     position: absolute;
-    right: -0.7em; /* 二、三、四聲標於注音右上角外緣（教育部規格，見 docs/zhuyin-guide.md） */
+    right: 0; /* 貼齊預留之聲調欄右緣（教育部規格，見 docs/zhuyin-guide.md） */
     top: 0;
     writing-mode: horizontal-tb;
     font-size: 1em; /* Align font size */
@@ -351,6 +354,7 @@ textarea:focus {
 /* 結果區工具列：字級滑桿與列印按鈕 */
 .output-tools {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
 }
@@ -765,15 +769,185 @@ textarea.voice-active {
     }
 }
 
+/* 摺疊機／平板展開虛擬鍵盤或矮視窗（寬度 > 768px 且可視高度 <= 700px）：
+   收斂垂直間距並讓雙欄面板自適應可視高度，防止頂部標題被推擠裁切 */
+@media (min-width: 769px) and (max-height: 700px) {
+    body:not(.about-page) {
+        align-items: flex-start;
+        padding: 0.6rem 1.25rem;
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    body:not(.about-page) .app-container {
+        height: 100%;
+        max-height: 100%;
+        gap: 0.5rem;
+    }
+
+    body:not(.about-page) .header-row {
+        margin-bottom: 0;
+    }
+
+    body:not(.about-page) header h1 {
+        font-size: 1.4rem;
+    }
+
+    body:not(.about-page) header .tagline {
+        display: none;
+    }
+
+    body:not(.about-page) .main-content {
+        flex: 1;
+        min-height: 0;
+        gap: 1rem;
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    body:not(.about-page) .glass-panel {
+        height: 100%;
+        min-height: 0;
+        padding: 0.85rem 1rem;
+    }
+
+    body:not(.about-page) label,
+    body:not(.about-page) .output-header {
+        margin-bottom: 0.4rem;
+    }
+
+    body:not(.about-page) .output-tools {
+        gap: 0.45rem;
+    }
+
+    body:not(.about-page) .font-size-control input[type="range"] {
+        width: 76px;
+    }
+
+    body:not(.about-page) .print-btn,
+    body:not(.about-page) .tool-btn {
+        min-height: 36px;
+        padding: 0 0.65rem;
+        position: relative;
+    }
+
+    body:not(.about-page) .tool-btn::after {
+        content: '';
+        position: absolute;
+        left: -4px;
+        right: -4px;
+        top: 50%;
+        height: 44px;
+        transform: translateY(-50%);
+    }
+
+    body:not(.about-page) .diff-legend {
+        font-size: 0.82rem;
+        margin: -0.15rem 0 0.35rem;
+    }
+
+    body:not(.about-page) .output-content {
+        max-height: none;
+        padding: 0.75rem;
+    }
+
+    body:not(.about-page) textarea {
+        padding: 0.75rem 6.8rem 0.75rem 0.75rem !important;
+    }
+}
+
+body.compact-viewport:not(.about-page) {
+    align-items: flex-start;
+    padding: 0.6rem 1.25rem;
+    overflow: hidden;
+}
+
+body.compact-viewport:not(.about-page) .app-container {
+    max-height: 100%;
+    gap: 0.5rem;
+}
+
+body.compact-viewport:not(.about-page) .header-row {
+    margin-bottom: 0;
+}
+
+body.compact-viewport:not(.about-page) header h1 {
+    font-size: 1.4rem;
+}
+
+body.compact-viewport:not(.about-page) header .tagline {
+    display: none;
+}
+
+body.compact-viewport:not(.about-page) .main-content {
+    flex: 1;
+    min-height: 0;
+    gap: 1rem;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+body.compact-viewport:not(.about-page) .glass-panel {
+    height: 100%;
+    min-height: 0;
+    padding: 0.85rem 1rem;
+}
+
+body.compact-viewport:not(.about-page) label,
+body.compact-viewport:not(.about-page) .output-header {
+    margin-bottom: 0.4rem;
+}
+
+body.compact-viewport:not(.about-page) .output-tools {
+    gap: 0.45rem;
+}
+
+body.compact-viewport:not(.about-page) .font-size-control input[type="range"] {
+    width: 76px;
+}
+
+body.compact-viewport:not(.about-page) .print-btn,
+body.compact-viewport:not(.about-page) .tool-btn {
+    min-height: 36px;
+    padding: 0 0.65rem;
+    position: relative;
+}
+
+body.compact-viewport:not(.about-page) .tool-btn::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+}
+
+body.compact-viewport:not(.about-page) .diff-legend {
+    font-size: 0.82rem;
+    margin: -0.15rem 0 0.35rem;
+}
+
+body.compact-viewport:not(.about-page) .output-content {
+    max-height: none;
+    padding: 0.75rem;
+}
+
+body.compact-viewport:not(.about-page) textarea {
+    padding: 0.75rem 6.8rem 0.75rem 0.75rem !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     body {
         align-items: flex-start;
-        padding: 0.5rem;
+        padding: 0.35rem 0.4rem;
+        height: 100dvh;
+        box-sizing: border-box;
     }
 
     .app-container {
-        gap: 0.4rem;
+        gap: 0.3rem;
+        height: 100%;
+        max-height: 100%;
         /* Height will be strictly controlled by JS visualViewport on mobile */
     }
 
@@ -814,13 +988,13 @@ textarea.voice-active {
     .main-content {
         display: flex;
         flex-direction: column-reverse;
-        gap: 0.5rem;
+        gap: 0.35rem;
         flex: 1;
         min-height: 0;
     }
     
     .glass-panel {
-        padding: 0.6rem;
+        padding: 0.45rem 0.55rem;
     }
 
     /* 輸入區高度由 JS 依內容調整（1 到 3 行） */
@@ -899,26 +1073,38 @@ textarea.voice-active {
 
     .output-content {
         font-size: 1.1rem;
-        padding: 0.5rem;
+        padding: 0.2rem 0.25rem;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        line-height: 1.65;
+    }
+
+    .zhuyin-word {
+        margin-right: 0.22em;
+    }
+
+    .zhuyin-bopomofo + .zhuyin-punct {
+        margin-left: 0.1em;
     }
 
     .output-header {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
     .output-title {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .output-tools {
-        gap: 0.4rem;
+        gap: 0.35rem;
     }
 
     .font-size-control {
-        gap: 0.3rem;
+        gap: 0.25rem;
     }
 
     .font-size-control input[type="range"] {
@@ -933,8 +1119,9 @@ textarea.voice-active {
     }
 
     .output-message {
-        font-size: 0.8rem;
-        margin: -0.2rem 0 0.4rem;
+        font-size: 0.78rem;
+        margin: -0.1rem 0 0.25rem;
+        padding: 0.25rem 0.5rem;
     }
 
     /* 手機只顯示圖示，觸控範圍延伸到 44px */
@@ -953,8 +1140,14 @@ textarea.voice-active {
     }
 
     .diff-legend {
-        font-size: 0.8rem;
-        margin: -0.2rem 0 0.4rem;
+        font-size: 0.78rem;
+        margin: -0.1rem 0 0.25rem;
+        line-height: 1.35;
+        padding: 0.15rem 0.45rem;
+        background: rgba(99, 102, 241, 0.08);
+        border-radius: 6px;
+        display: inline-block;
+        width: fit-content;
     }
 
     /* Mobile overrides for voice input button */
@@ -1067,5 +1260,635 @@ textarea.voice-active {
 
     .zhuyin-word.diff-container {
         background: none;
+    }
+}
+
+/* ---------- 國語生字作業簿列印對話框與格線樣式 ---------- */
+.workbook-modal {
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    width: 92vw;
+    max-width: 900px;
+    max-height: 90vh;
+    background: #ffffff;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    margin: auto;
+    overflow: hidden;
+}
+
+.workbook-modal::backdrop {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.wb-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 90vh;
+}
+
+.wb-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.wb-modal-header h2 {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin: 0;
+    font-weight: 700;
+}
+
+.wb-close-btn {
+    border: none;
+    background: none;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.wb-close-btn:hover {
+    background: #e2e8f0;
+    color: var(--text-main);
+}
+
+.wb-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.wb-control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+}
+
+.wb-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.wb-text-btn {
+    border: none;
+    background: none;
+    color: var(--zhuyin-color);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+
+.wb-text-btn:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.wb-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 0.6rem;
+    border-radius: 12px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+}
+
+.wb-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wb-chip:hover {
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.wb-chip.is-selected {
+    border-color: var(--primary-color);
+    background: #eef2ff;
+    color: var(--zhuyin-color);
+    font-weight: 600;
+}
+
+.wb-chip-check {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.wb-chip-bopo {
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
+
+.wb-options-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.wb-option-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.wb-option-item select {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.wb-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.wb-preview-header {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.workbook-print-area {
+    background: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.wb-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.wb-tip {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.wb-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0 1.5rem;
+    border-radius: 999px;
+    border: none;
+    background: var(--primary-color);
+    color: #ffffff;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.wb-primary-btn:hover:not(:disabled) {
+    background: var(--zhuyin-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.wb-primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wb-empty-tip {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    background: white;
+    border-radius: 8px;
+}
+
+/* ---------- A4 生字作業簿核心格線 (教育部標準 30:15 直式) ---------- */
+.wb-page {
+    width: 100%;
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 1.5rem;
+    background: #ffffff;
+    padding: 12mm 10mm;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    font-family: 'Noto Sans TC', 'DFKai-SB', 'BiauKai', 'Kaiti TC', serif;
+}
+
+.wb-page:last-child {
+    margin-bottom: 0;
+}
+
+.wb-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 2px solid #1e293b;
+}
+
+.wb-header-title-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.wb-sheet-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: 0.08em;
+    font-family: 'DFKai-SB', 'BiauKai', 'Kaiti TC', serif;
+    white-space: nowrap;
+}
+
+.wb-moe-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #4338ca;
+    background: #e0e7ff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.wb-student-info {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: #334155;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.wb-page-num {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.wb-page-body {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* 直式直行架構：由右向左排列直欄，符合台灣作業簿標準 */
+.wb-columns-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2.5mm;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.wb-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 28mm;
+    border: 1.5px solid #1e293b;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.wb-column-empty {
+    opacity: 0.85;
+}
+
+/* 橫式架構備選 */
+.wb-rows-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5mm;
+    width: 100%;
+}
+
+.wb-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2mm;
+    width: 100%;
+}
+
+/* 單一練習單元格：田字格 (30:30) + 注音欄 (15:30) 等高齊頭齊底 */
+.wb-cell {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.wb-column .wb-cell:not(:last-child) {
+    border-bottom: 1.5px solid #1e293b;
+}
+
+.wb-row .wb-cell {
+    border: 1.5px solid #1e293b;
+    flex: 1;
+    max-width: 28mm;
+}
+
+/* 國字田字格：教育部標準 1:1 正方形 (30:30 比例) */
+.wb-grid {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    flex: 2;
+    border-right: 1.5px solid #1e293b;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cline x1='50' y1='0' x2='50' y2='100' stroke='%2394a3b8' stroke-width='1.2' stroke-dasharray='4,4'/%3E%3Cline x1='0' y1='50' x2='100' y2='50' stroke='%2394a3b8' stroke-width='1.2' stroke-dasharray='4,4'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    container-type: inline-size;
+}
+
+.wb-char {
+    font-size: 2.2rem;
+    font-size: 78cqw;
+    font-family: 'DFKai-SB', 'BiauKai', 'Kaiti TC', serif;
+    line-height: 1;
+    user-select: none;
+    font-weight: 500;
+}
+
+.wb-model-text {
+    color: #0f172a;
+}
+
+.wb-trace-text {
+    color: #94a3b8 !important;
+}
+
+/* 注音欄：教育部標準寬度為國字一半 (15:30 比例，長寬 1:2) */
+.wb-zhuyin-col {
+    position: relative;
+    aspect-ratio: 1 / 2;
+    flex: 1;
+    background-color: #ffffff;
+    /* 垂直虛線分割線：左 60% 符號書寫區，右 40% 聲調標注區（教育部直式體式） */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cline x1='60' y1='0' x2='60' y2='100' stroke='%23e2e8f0' stroke-width='1.2' stroke-dasharray='3,3'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    user-select: none;
+    container-type: inline-size;
+}
+
+.wb-zhuyin-col.wb-trace-text {
+    color: #94a3b8;
+}
+
+/* 注音符號直排區（佔注音欄左側 60% 寬度） */
+.wb-bopo-symbols-col {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: 'DFKai-SB', 'BiauKai', 'Noto Sans TC', sans-serif;
+    color: inherit;
+    font-weight: 600;
+}
+
+/* 單符號：垂直置中（教育部手冊規範 Y: 10.5~19.5） */
+.wb-bopo-count-1 .wb-bopo-symbols-col {
+    justify-content: center;
+}
+
+.wb-bopo-count-1 .wb-bopo-sym {
+    font-size: 1.15rem;
+    font-size: 50cqw;
+    line-height: 1;
+}
+
+/* 雙符號：二符號自然相連均勻排列（教育部手冊規範 聲母在上、韻母在下，中間小間距） */
+.wb-bopo-count-2 .wb-bopo-symbols-col {
+    justify-content: center;
+    gap: 6%;
+}
+
+.wb-bopo-count-2.has-light-tone .wb-bopo-symbols-col {
+    padding-top: 10%;
+    padding-bottom: 2%;
+}
+
+.wb-bopo-count-2 .wb-bopo-sym {
+    font-size: 1.05rem;
+    font-size: 46cqw;
+    line-height: 1;
+}
+
+/* 三符號：三符號等距緊湊直排（教育部手冊規範 聲母、介母、韻母） */
+.wb-bopo-count-3 .wb-bopo-symbols-col {
+    justify-content: center;
+    gap: 2%;
+    padding: 2% 0;
+}
+
+.wb-bopo-count-3.has-light-tone .wb-bopo-symbols-col {
+    padding-top: 10%;
+}
+
+.wb-bopo-count-3 .wb-bopo-sym {
+    font-size: 0.92rem;
+    font-size: 40cqw;
+    line-height: 1;
+}
+
+.wb-bopo-sym {
+    display: block;
+    line-height: 1;
+}
+
+/* 聲調符號區：依教育部手冊精確幾何錨定 */
+.wb-bopo-tone {
+    position: absolute;
+    font-family: 'DFKai-SB', 'BiauKai', 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    line-height: 1;
+    color: inherit;
+}
+
+/* 二、三、四聲調號：位於右側 40% 聲調列中央，垂直對齊所屬符號右上緣 */
+.wb-bopo-tone.wb-tone-mark {
+    left: 60%;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-size: 38cqw;
+}
+
+/* 1個符號時：調號對齊單符號右上側（高度約 36% 處，符合教育部規範） */
+.wb-tone-pos-1 {
+    top: 36%;
+}
+
+/* 2個符號時：調號對齊第 2 個符號右上側（高度約 50% 處，符合教育部規範） */
+.wb-tone-pos-2 {
+    top: 50%;
+}
+
+/* 3個符號時：調號對齊第 3 個符號右上側（高度約 64% 處，符合教育部規範） */
+.wb-tone-pos-3 {
+    top: 64%;
+}
+
+/* 輕聲（˙）：教育部手冊規定置於第一個符號正上方中央 */
+.wb-bopo-tone.wb-tone-light {
+    top: 2%;
+    left: 30%;
+    transform: translateX(-50%);
+    font-size: 0.95rem;
+    font-size: 38cqw;
+}
+
+.wb-zhuyin-col.wb-zhuyin-blank {
+    background-color: #ffffff;
+}
+
+/* ---------- 作業簿列印專用樣式 (@media print) ---------- */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 8mm 6mm;
+    }
+
+    body.printing-workbook {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body.printing-workbook .app-container,
+    body.printing-workbook .wb-modal-header,
+    body.printing-workbook .wb-control-group,
+    body.printing-workbook .wb-options-row,
+    body.printing-workbook .wb-preview-header,
+    body.printing-workbook .wb-modal-footer {
+        display: none !important;
+    }
+
+    body.printing-workbook .workbook-modal {
+        position: static !important;
+        inset: auto !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        height: auto !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    body.printing-workbook .wb-modal-content,
+    body.printing-workbook .wb-modal-body,
+    body.printing-workbook .wb-preview-wrapper,
+    body.printing-workbook .workbook-print-area {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        border: none !important;
+        border-radius: 0 !important;
+        display: block !important;
+    }
+
+    body.printing-workbook .wb-page {
+        margin: 0 !important;
+        padding: 4mm 2mm !important;
+        box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    body.printing-workbook .wb-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    body.printing-workbook .wb-grid,
+    body.printing-workbook .wb-zhuyin-col,
+    body.printing-workbook .wb-column {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }

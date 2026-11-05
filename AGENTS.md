@@ -63,12 +63,12 @@ flowchart LR
 
 本專案透過 GitHub Actions (`.github/workflows/`) 自動部署至 Firebase Hosting：
 
-| 分支 | 對應環境 | 網址 | 觸發方式 |
+| 分支 | 對應環境 | 網址 | 觸發方式與權限限制 |
 | :--- | :--- | :--- | :--- |
-| **`main`** | 測試站 (`dev` target) | `https://zhuyin-dev.web.app` | Push 或 Merge PR 至 `main` 自動部署（同時更新 GitHub Pages）。 |
-| **`release`** | 正式站 (`prod` target) | `https://zhuyin.web.app` | 將 `main` 合併並推送至 `release` 分支（`git push origin main:release`）自動部署。 |
+| **`main`** | 測試站 (`dev` target) | `https://zhuyin-dev.web.app` | Push 或 Merge PR 至 `main` 自動部署（同時更新 GitHub Pages）。日常開發與修改僅可推送至 `main`。 |
+| **`release`** | 正式站 (`prod` target) | `https://zhuyin.web.app` | **嚴格限制：必須經過使用者明確同意並下達 Release 指令後**，才可將 `main` 合併並推送至 `release` 分支（`git push origin main:release`）。嚴禁 AI 自行推送至 `release`。 |
 
 ### 標準發布步驟
-1. 於 `main` 完成開發，執行 `node --check *.js` 驗證語法無誤。
-2. 推送至 `main` 並在測試站 `https://zhuyin-dev.web.app` 驗證功能。
-3. 確認無誤後，同步更新 `about.html` 版本號、合併至 `release` 分支並打上 Git Tag（如 `v1.2.0`）。
+1. 於 `main` 完成開發，執行 `node test.js` 與 `node --check *.js` 驗證無誤。
+2. 推送至 `main` 並在測試站 `https://zhuyin-dev.web.app` 交由使用者驗證功能。
+3. **等待使用者明確同意 Release 後**，才可同步更新 `about.html` 版本號、合併至 `release` 分支並打上 Git Tag（如 `v1.2.0`）。

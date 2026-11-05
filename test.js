@@ -9,6 +9,9 @@ const path = require('path');
 global.window = global;
 require('./tw-zhuyin.js');
 require('./render.js');
+// voice-input.js 在頁面載入後才綁定 DOM；測試只需要它的純函式
+global.document = global.document || { addEventListener() {} };
+require('./voice-input.js');
 
 let passed = 0;
 
@@ -105,6 +108,78 @@ test('資安規範：外部 CDN script 必須具備 SRI (integrity)', () => {
             assert(tag.includes('crossorigin="anonymous"'), `${f} 中的外部 script 缺少 crossorigin: ${tag}`);
         }
     }
+});
+
+// 6. 摺疊機／平板虛擬鍵盤視窗自適應與語音輸入滿版防呆檢查
+test('響應式與語音輸入規範：展開鍵盤自適應與語音輸入自動收起鍵盤並撐滿結果區', () => {
+    const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+    const voiceJs = fs.readFileSync(path.join(__dirname, 'voice-input.js'), 'utf8');
+    assert(indexHtml.includes('interactive-widget=resizes-content'), 'index.html viewport 應包含 interactive-widget=resizes-content');
+    assert(indexHtml.includes('compact-viewport'), 'index.html visualViewport 腳本應處理 compact-viewport');
+    assert(styleCss.includes('body.compact-viewport'), 'style.css 應定義 body.compact-viewport 緊湊高度樣式');
+    assert(!styleCss.includes('max-height: 500px'), 'style.css 的 .output-content 不得限制 max-height: 500px，否則鍵盤收起時結果區無法撐滿全螢幕');
+    assert(voiceJs.includes('inputArea.blur()'), 'voice-input.js 啟動語音輸入時應呼叫 inputArea.blur() 收起虛擬鍵盤');
+    assert(!voiceJs.includes('inputArea.focus()') || !voiceJs.split('recognition.onstart')[1].includes('inputArea.focus()'), 'recognition.onstart 不得呼叫 inputArea.focus() 喚起鍵盤');
+});
+
+// 7. 語音輸入數字轉國字（讓數字也能標注音）
+test('語音輸入：阿拉伯數字轉國字 (ZhuyinVoice.digitsToChinese)', () => {
+    const cases = [
+        ['3個蘋果', '三個蘋果'],
+        ['2個人', '兩個人'],
+        ['我有2', '我有二'],
+        ['10', '十'],
+        ['15天', '十五天'],
+        ['20', '二十'],
+        ['105', '一百零五'],
+        ['110', '一百一十'],
+        ['1000', '一千'],
+        ['1010', '一千零一十'],
+        ['10010', '一萬零一十'],
+        ['100000', '十萬'],
+        ['120,000元', '十二萬元'],
+        ['100000000', '一億'],
+        ['0', '零'],
+        ['3.14', '三點一四'],
+        ['50%', '百分之五十'],
+        ['2026年', '二〇二六年'],
+        ['0912345678', '〇九一二三四五六七八'],
+        ['３個', '三個'],
+        ['沒有數字', '沒有數字']
+    ];
+    for (const [input, expected] of cases) {
+        assert.strictEqual(window.ZhuyinVoice.digitsToChinese(input), expected, `「${input}」轉換錯誤`);
+    }
+    // 轉換後每個字都要有注音
+    const tokens = window.TaiwanZhuyin.textToTokens(window.ZhuyinVoice.digitsToChinese('2026年有365天'));
+    assert(tokens.every(t => t.zhuyin), '數字轉國字後應全部有注音');
+});
+
+// 8. 國語生字作業簿列印模組與規範檢查
+test('國語生字作業簿：田字格、注音欄與列印樣式完整性檢查', () => {
+    const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+    const workbookJs = fs.readFileSync(path.join(__dirname, 'workbook.js'), 'utf8');
+
+    assert(indexHtml.includes('id="workbook-btn"'), 'index.html 應包含 workbook-btn 按鈕');
+    assert(indexHtml.includes('id="workbook-modal"'), 'index.html 應包含 workbook-modal 對話框');
+    assert(indexHtml.includes('workbook.js'), 'index.html 應載入 workbook.js 模組');
+
+    assert(styleCss.includes('.workbook-modal'), 'style.css 應包含 .workbook-modal 樣式');
+    assert(styleCss.includes('.wb-grid'), 'style.css 應包含 .wb-grid 田字格樣式');
+    assert(styleCss.includes('.wb-zhuyin-col'), 'style.css 應包含 .wb-zhuyin-col 注音欄樣式');
+    assert(styleCss.includes('body.printing-workbook'), 'style.css @media print 應包含 body.printing-workbook 作業簿列印規則');
+
+    assert(workbookJs.includes('extractCharacters'), 'workbook.js 應包含 extractCharacters 生字過濾函式');
+    assert(workbookJs.includes('renderWorkbookPreview'), 'workbook.js 應包含 renderWorkbookPreview 預覽渲染函式');
+});
+
+// 9. 聲調與相鄰國字防碰撞檢查
+test('注音排版防碰撞：.bopo-container 應內建聲調安全寬度，防止調號向外溢出碰撞相鄰國字', () => {
+    const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+    assert(styleCss.includes('.bopo-container') && styleCss.includes('padding-right: 0.55em'), 'style.css .bopo-container 應設定 padding-right: 0.55em 預留聲調寬度');
+    assert(styleCss.includes('.bopo-tone.tone-mark') && styleCss.includes('right: 0;'), '.bopo-tone.tone-mark 應貼齊聲調欄右緣 right: 0，不得向容器外溢出負值');
 });
 
 console.log(`\n🎉 全部 ${passed} 項檢查通過！`);
