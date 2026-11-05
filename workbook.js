@@ -234,16 +234,6 @@
                         colsHtml += `<div class="wb-column">${cellsHtml}</div>`;
                     });
 
-                    // 若本頁生字少於每頁欄數，補齊空白欄以維持工整版面
-                    const emptyColsCount = colsPerPage - pageItems.length;
-                    for (let ec = 0; ec < emptyColsCount; ec++) {
-                        let emptyCellsHtml = '';
-                        for (let c = 0; c < cellsCount; c++) {
-                            emptyCellsHtml += generateCellHtml({ char: '', chars: '', tone: '' }, 'blank');
-                        }
-                        colsHtml += `<div class="wb-column wb-column-empty">${emptyCellsHtml}</div>`;
-                    }
-
                     bodyHtml = `<div class="wb-columns-container">${colsHtml}</div>`;
                 } else {
                     // 橫式橫行：橫行由上往下排列，每行從左向右書寫
